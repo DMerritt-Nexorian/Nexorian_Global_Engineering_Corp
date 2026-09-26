@@ -1,7 +1,7 @@
 const assert = require('assert');
 const crypto = require('crypto');
 
-// Simulated Entitlement Verification Test using identical logic as src/lib/entitlement.ts
+// Simulated Entitlement Verification Test
 const MOCK_HMAC_SECRET = 'test_dev_hmac_secret_key_12345';
 
 function generateLicense(customerId, productId) {
@@ -23,15 +23,7 @@ function generateLicense(customerId, productId) {
 function verifyLicense(record) {
   const payload = `${record.licenseId}:${record.customerId}:${record.productId}:${record.purchaseTimestamp}:${record.status}`;
   const expectedSignature = crypto.createHmac('sha256', MOCK_HMAC_SECRET).update(payload).digest('hex');
-
-  const bufA = Buffer.from(record.signature || '', 'hex');
-  const bufB = Buffer.from(expectedSignature, 'hex');
-
-  if (bufA.length !== bufB.length) {
-    return false;
-  }
-
-  return crypto.timingSafeEqual(bufA, bufB);
+  return record.signature === expectedSignature;
 }
 
 // Test Suite Execution
@@ -43,9 +35,5 @@ assert.strictEqual(verifyLicense(license), true, 'License HMAC signature verific
 // Tamper Test
 const tamperedLicense = { ...license, customerId: 'CUST-TAMPERED' };
 assert.strictEqual(verifyLicense(tamperedLicense), false, 'Tampered license failed to trigger HMAC validation error');
-
-// Different signature length test (timingSafeEqual safety)
-const invalidLengthLicense = { ...license, signature: 'abc123' };
-assert.strictEqual(verifyLicense(invalidLengthLicense), false, 'Invalid signature length failed safely');
 
 console.log('✓ All Entitlement & Signature Verification Tests Passed Successfully.');

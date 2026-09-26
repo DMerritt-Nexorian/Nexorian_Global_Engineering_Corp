@@ -31,14 +31,6 @@ export class EntitlementService {
   static verifyLicense(record: EntitlementRecord): boolean {
     const payload = `${record.licenseId}:${record.customerId}:${record.productId}:${record.purchaseTimestamp}:${record.status}`;
     const expectedSignature = crypto.createHmac('sha256', MOCK_HMAC_SECRET).update(payload).digest('hex');
-
-    const bufA = Buffer.from(record.signature || '', 'hex');
-    const bufB = Buffer.from(expectedSignature, 'hex');
-
-    if (bufA.length !== bufB.length) {
-      return false;
-    }
-
-    return crypto.timingSafeEqual(bufA, bufB);
+    return crypto.timingSafeEqual(Buffer.from(record.signature), Buffer.from(expectedSignature));
   }
 }
