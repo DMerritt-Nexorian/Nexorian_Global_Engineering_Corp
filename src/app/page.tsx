@@ -1,11 +1,38 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { REGISTERED_PRODUCTS } from '@/lib/products-registry';
+import { JarvisEngine, JarvisQueryResponse } from '@/lib/jarvis-engine';
 
 export default function HomePage() {
+  const [userQuery, setUserQuery] = useState('');
+  const [jarvisResponse, setJarvisResponse] = useState<JarvisQueryResponse | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleQuerySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userQuery.trim()) return;
+    setIsProcessing(true);
+
+    setTimeout(() => {
+      const res = JarvisEngine.processQuery({ query: userQuery, context: 'PUBLIC' });
+      setJarvisResponse(res);
+      setIsProcessing(false);
+    }, 300);
+  };
+
+  const handleQuickPrompt = (prompt: string) => {
+    setUserQuery(prompt);
+    setIsProcessing(true);
+    setTimeout(() => {
+      const res = JarvisEngine.processQuery({ query: prompt, context: 'PUBLIC' });
+      setJarvisResponse(res);
+      setIsProcessing(false);
+    }, 300);
+  };
+
   return (
-    <div style={{ backgroundColor: '#0b0f17', color: '#f1f5f9', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ backgroundColor: '#090d16', color: '#f1f5f9', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
       {/* Header Bar */}
       <header style={{ borderBottom: '1px solid #1e293b', padding: '1.25rem 3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#0f172a', position: 'sticky', top: 0, zIndex: 100 }}>
@@ -17,17 +44,17 @@ export default function HomePage() {
         </div>
 
         <nav style={{ display: 'flex', gap: '2.5rem', fontSize: '0.85rem', fontWeight: 500 }}>
+          <a href="#jarvis" style={{ color: '#38bdf8', textDecoration: 'none', fontWeight: 600 }}>JARVIS AI</a>
           <a href="#technology" style={{ color: '#cbd5e1', textDecoration: 'none' }}>TECHNOLOGY</a>
           <a href="/products" style={{ color: '#f8fafc', textDecoration: 'none', fontWeight: 600 }}>PRODUCTS</a>
           <a href="/demos/pqc" style={{ color: '#cbd5e1', textDecoration: 'none' }}>DEMONSTRATIONS</a>
-          <a href="/dataroom" style={{ color: '#cbd5e1', textDecoration: 'none' }}>DATA ROOM</a>
           <a href="/founder" style={{ color: '#fbbf24', textDecoration: 'none', fontWeight: 600 }}>FOUNDER PORTAL</a>
         </nav>
 
         <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
           <span style={{ fontSize: '0.75rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' }} />
-            SYSTEMS OPERATIONAL
+            SENTINEL-1 ACTIVE
           </span>
           <a href="/products" style={{ backgroundColor: '#f8fafc', color: '#0f172a', padding: '0.55rem 1.25rem', borderRadius: '3px', textDecoration: 'none', fontWeight: 600, fontSize: '0.8rem', letterSpacing: '0.5px' }}>
             LICENSE SOFTWARE
@@ -36,58 +63,107 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section style={{ padding: '6rem 3rem 4rem 3rem', borderBottom: '1px solid #1e293b', backgroundColor: '#090d16' }}>
+      <section style={{ padding: '5rem 3rem 3rem 3rem', borderBottom: '1px solid #1e293b', backgroundColor: '#0b0f17' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#38bdf8', letterSpacing: '2px', marginBottom: '1rem', textTransform: 'uppercase' }}>
-            ADVANCED ENGINEERING SYSTEMS & COMPUTATIONAL INFRASTRUCTURE
+            ADVANCED COMPUTATIONAL INFRASTRUCTURE & SYSTEM INTELLIGENCE
           </div>
 
-          <h1 style={{ fontSize: '3.25rem', fontWeight: 700, color: '#f8fafc', lineHeight: 1.15, letterSpacing: '-0.02em', margin: '0 0 1.5rem 0', maxWidth: '900px' }}>
-            High-Performance Cryptographic, Deterministic, and Embedded Computing Platforms.
+          <h1 style={{ fontSize: '3rem', fontWeight: 700, color: '#f8fafc', lineHeight: 1.15, letterSpacing: '-0.02em', margin: '0 0 1.5rem 0', maxWidth: '900px' }}>
+            High-Performance Cryptographic, Deterministic, and Autonomous Engineering Platforms.
           </h1>
 
-          <p style={{ fontSize: '1.15rem', color: '#94a3b8', lineHeight: 1.6, maxWidth: '780px', margin: '0 0 2.5rem 0' }}>
-            Nexorian Global Engineering Corp designs and deploys post-quantum cryptographic libraries, hardware RTL acceleration cores, deterministic autonomous safety runtimes, and bio-intelligence software systems.
+          <p style={{ fontSize: '1.1rem', color: '#94a3b8', lineHeight: 1.6, maxWidth: '800px', margin: '0 0 2rem 0' }}>
+            Nexorian Global Engineering Corp designs and deploys post-quantum cryptographic libraries (FIPS 203/204), hardware RTL acceleration cores, deterministic autonomous safety runtimes, and bio-intelligence software systems.
           </p>
 
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <a href="/products" style={{ backgroundColor: '#0284c7', color: '#ffffff', padding: '0.75rem 1.75rem', borderRadius: '3px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>
+            <a href="#jarvis" style={{ backgroundColor: '#0284c7', color: '#ffffff', padding: '0.75rem 1.75rem', borderRadius: '3px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>
+              QUERY JARVIS AI
+            </a>
+            <a href="/products" style={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: '#f8fafc', padding: '0.75rem 1.75rem', borderRadius: '3px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>
               EXPLORE PRODUCTS
             </a>
-            <a href="/demos/ntt" style={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: '#f8fafc', padding: '0.75rem 1.75rem', borderRadius: '3px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>
-              LIVE DEMONSTRATIONS
-            </a>
-            <a href="#technology" style={{ border: '1px solid #334155', color: '#94a3b8', padding: '0.75rem 1.75rem', borderRadius: '3px', textDecoration: 'none', fontWeight: 500, fontSize: '0.9rem' }}>
-              TECHNICAL ARCHITECTURE
+            <a href="/demos/ntt" style={{ border: '1px solid #334155', color: '#cbd5e1', padding: '0.75rem 1.75rem', borderRadius: '3px', textDecoration: 'none', fontWeight: 500, fontSize: '0.9rem' }}>
+              EXECUTE NTT DEMO
             </a>
           </div>
         </div>
       </section>
 
-      {/* Engineering Capabilities Bar */}
-      <section style={{ borderBottom: '1px solid #1e293b', backgroundColor: '#0f172a', padding: '2rem 3rem' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem' }}>
-          <div>
-            <div style={{ fontSize: '0.75rem', color: '#64748b', letterSpacing: '1px', textTransform: 'uppercase' }}>REPOSITORY ECOSYSTEM</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', marginTop: '0.25rem' }}>20 Repositories</div>
+      {/* Embedded Live JARVIS System Intelligence Console */}
+      <section id="jarvis" style={{ padding: '4rem 3rem', borderBottom: '1px solid #1e293b', backgroundColor: '#0f172a' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <div>
+              <span style={{ fontSize: '0.75rem', color: '#38bdf8', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600 }}>SYSTEM INTELLIGENCE CONSOLE</span>
+              <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#f8fafc', margin: '0.25rem 0 0 0' }}>Interact with JARVIS Platform Intelligence</h2>
+            </div>
+            <span style={{ fontSize: '0.75rem', backgroundColor: '#064e3b', color: '#34d399', border: '1px solid #059669', padding: '0.3rem 0.75rem', borderRadius: '3px', fontFamily: 'monospace' }}>
+              RULES BEFORE REASONING
+            </span>
           </div>
-          <div>
-            <div style={{ fontSize: '0.75rem', color: '#64748b', letterSpacing: '1px', textTransform: 'uppercase' }}>CRYPTOGRAPHIC BOUNDARY</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', marginTop: '0.25rem' }}>FIPS 203 & 204</div>
+
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '2rem', maxWidth: '850px' }}>
+            JARVIS is the primary intelligence interface across the Nexorian ecosystem. Query real-time architecture, FIPS 203/204 post-quantum cryptographic specs, Sentinel-1 DAGM execution rules, or product evidence dossiers.
+          </p>
+
+          {/* Quick Prompts */}
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+            <button onClick={() => handleQuickPrompt('What is the total repository count and portfolio architecture?')} style={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: '#38bdf8', padding: '0.4rem 0.8rem', borderRadius: '3px', fontSize: '0.8rem', cursor: 'pointer', fontFamily: 'monospace' }}>
+              [ 20 REPO PORTFOLIO ]
+            </button>
+            <button onClick={() => handleQuickPrompt('Explain FIPS 203 and FIPS 204 Post-Quantum Cryptography')} style={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: '#38bdf8', padding: '0.4rem 0.8rem', borderRadius: '3px', fontSize: '0.8rem', cursor: 'pointer', fontFamily: 'monospace' }}>
+              [ FIPS 203/204 PQC ]
+            </button>
+            <button onClick={() => handleQuickPrompt('What are Sentinel-1 and DAGM execution rules?')} style={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: '#38bdf8', padding: '0.4rem 0.8rem', borderRadius: '3px', fontSize: '0.8rem', cursor: 'pointer', fontFamily: 'monospace' }}>
+              [ SENTINEL-1 & DAGM ]
+            </button>
+            <button onClick={() => handleQuickPrompt('What is the commercial pricing and Gate approval status?')} style={{ backgroundColor: '#1e293b', border: '1px solid #334155', color: '#38bdf8', padding: '0.4rem 0.8rem', borderRadius: '3px', fontSize: '0.8rem', cursor: 'pointer', fontFamily: 'monospace' }}>
+              [ PRICING & GATES ]
+            </button>
           </div>
-          <div>
-            <div style={{ fontSize: '0.75rem', color: '#64748b', letterSpacing: '1px', textTransform: 'uppercase' }}>DETERMINISTIC SAFETY</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', marginTop: '0.25rem' }}>Proof-before-Trust</div>
-          </div>
-          <div>
-            <div style={{ fontSize: '0.75rem', color: '#64748b', letterSpacing: '1px', textTransform: 'uppercase' }}>DEPLOYMENT MODES</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', marginTop: '0.25rem' }}>Local / On-Prem / RTL</div>
-          </div>
+
+          {/* Input Form */}
+          <form onSubmit={handleQuerySubmit} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+            <input
+              type="text"
+              value={userQuery}
+              onChange={(e) => setUserQuery(e.target.value)}
+              placeholder="Query JARVIS regarding cryptographic bounds, DAGM safety, or software licensing..."
+              style={{ flex: 1, backgroundColor: '#0b0f17', border: '1px solid #334155', color: '#f8fafc', padding: '0.85rem 1.25rem', borderRadius: '4px', fontSize: '0.9rem', fontFamily: 'monospace' }}
+            />
+            <button type="submit" disabled={isProcessing} style={{ backgroundColor: '#0284c7', color: '#fff', border: 'none', padding: '0.85rem 2rem', borderRadius: '4px', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer' }}>
+              {isProcessing ? 'REASONING...' : 'QUERY JARVIS'}
+            </button>
+          </form>
+
+          {/* JARVIS Output Display */}
+          {jarvisResponse && (
+            <div style={{ backgroundColor: '#0b0f17', border: '1px solid #0284c7', borderRadius: '4px', padding: '1.75rem', fontFamily: 'monospace' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #1e293b', paddingBottom: '0.75rem' }}>
+                <span style={{ color: '#38bdf8', fontWeight: 'bold', fontSize: '0.85rem' }}>JARVIS INTELLIGENCE RESPONSE</span>
+                <span style={{ color: '#10b981', fontSize: '0.75rem', backgroundColor: '#064e3b', padding: '0.2rem 0.5rem', borderRadius: '2px' }}>
+                  {jarvisResponse.governanceStatus}
+                </span>
+              </div>
+
+              <p style={{ fontSize: '0.95rem', color: '#cbd5e1', lineHeight: 1.6, margin: '0 0 1.25rem 0' }}>
+                {jarvisResponse.answer}
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', backgroundColor: '#0f172a', padding: '1rem', borderRadius: '4px', border: '1px solid #1e293b', fontSize: '0.8rem' }}>
+                <div><span style={{ color: '#64748b' }}>TRUTH MODEL:</span> <span style={{ color: '#10b981', fontWeight: 'bold' }}>{jarvisResponse.truthState}</span></div>
+                <div><span style={{ color: '#64748b' }}>EVIDENCE TIER:</span> <span style={{ color: '#38bdf8', fontWeight: 'bold' }}>{jarvisResponse.evidenceLevel}</span></div>
+                <div style={{ gridColumn: '1 / -1' }}><span style={{ color: '#64748b' }}>EVIDENCE BASIS:</span> <span style={{ color: '#cbd5e1' }}>{jarvisResponse.evidenceDetails}</span></div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Sentinel-1 Architecture & Math Banner */}
-      <section style={{ borderBottom: '1px solid #1e293b', backgroundColor: '#0f172a', padding: '2.5rem 3rem' }}>
+      <section style={{ borderBottom: '1px solid #1e293b', backgroundColor: '#090d16', padding: '2.5rem 3rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             [ CANONICAL RUNTIME ARCHITECTURE ]
@@ -95,7 +171,7 @@ export default function HomePage() {
           <h2 style={{ fontSize: '1.35rem', color: '#f8fafc', fontWeight: 700, margin: '0 0 1rem 0' }}>
             Sentinel-1 Deterministic Execution Runtime
           </h2>
-          <p style={{ color: '#cbd5e1', fontSize: '0.925rem', lineHeight: 1.65, margin: 0, backgroundColor: '#0b0f17', padding: '1.25rem', borderRadius: '4px', border: '1px solid #1e293b', fontFamily: 'monospace' }}>
+          <p style={{ color: '#cbd5e1', fontSize: '0.925rem', lineHeight: 1.65, margin: 0, backgroundColor: '#0f172a', padding: '1.25rem', borderRadius: '4px', border: '1px solid #1e293b', fontFamily: 'monospace' }}>
             Sentinel-1 is a zero-cloud deterministic AI runtime architecture built around finite-field Galois dynamics (F_q), O(N log N) Number Theoretic Transforms (NTTs), and Deterministic Autonomous Guardrail Mesh (DAGM) execution graphs. Governed by &quot;Proof before Trust,&quot; the system is designed to support contractive-stability constraints represented by d/dt ||&delta;x(t)|| &le; -c ||&delta;x(t)|| through parameter projections &Pi;_C for controlled recursive learning.
           </p>
         </div>
