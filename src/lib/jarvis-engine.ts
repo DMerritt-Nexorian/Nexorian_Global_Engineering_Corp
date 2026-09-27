@@ -78,7 +78,7 @@ export class JarvisEngine {
     // 4. Founder & Governance Operations
     if (q.includes('gate') || q.includes('approval') || q.includes('founder') || q.includes('dennis') || q.includes('license') || q.includes('price')) {
       return {
-        answer: `Human authority is strictly enforced across Gates H1 through H6 (HUMAN_APPROVAL_REGISTER.md). Dennis W. Merritt holds sole IP ownership. Commercial product leases range from $4,999/yr to $35,000/yr (Enterprise OEM $45,000/yr – $350,000/yr). Live payments require Gate H3 approval.`,
+        answer: `Human authority is strictly enforced across Gates H1 through H6 (HUMAN_APPROVAL_REGISTER.md). Dennis W. Merritt holds sole IP ownership. Commercial product leases range from $7,500/yr to $35,000/yr (Enterprise OEM $75,000/yr – $350,000/yr). Live payments require Gate H3 approval.`,
         truthState: 'VERIFIED',
         evidenceLevel: 'LEVEL 3',
         evidenceDetails: 'Gate H1 approved; Gate H3 pending production human activation record.',
