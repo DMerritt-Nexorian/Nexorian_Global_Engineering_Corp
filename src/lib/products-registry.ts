@@ -1,16 +1,12 @@
 import { ProductCatalogItem } from './types';
 
 export interface ProductRegistryEntry extends ProductCatalogItem {
-  buildStatus: 'SUCCESS' | 'PENDING' | 'ACCESS UNVERIFIED' | 'VERIFIED';
+  buildStatus: 'SUCCESS' | 'PENDING' | 'ACCESS UNVERIFIED';
   demoRoute?: string;
   downloadArtifact?: string;
   sha256Checksum?: string;
   sbomUrl?: string;
   enterprisePriceUSD: number;
-  truthState: 'EXISTING' | 'VERIFIED' | 'TARGET';
-  evidenceLevel: 'LEVEL 0' | 'LEVEL 1' | 'LEVEL 2' | 'LEVEL 3' | 'LEVEL 4' | 'LEVEL 5' | 'LEVEL 6';
-  evidenceDescription: string;
-  localPath?: string;
 }
 
 export const REGISTERED_PRODUCTS: ProductRegistryEntry[] = [
@@ -26,15 +22,11 @@ export const REGISTERED_PRODUCTS: ProductRegistryEntry[] = [
     description: 'Production Web Portal, 3D WebGL Jarvis entity, and air-gapped Virtual Data Room.',
     priceUSD: 4999,
     enterprisePriceUSD: 45000,
-    buildStatus: 'VERIFIED',
+    buildStatus: 'SUCCESS',
     demoRoute: '/demos/pqc',
     downloadArtifact: '/downloads/nexorian-portal-v1.0.0-staging.tar.gz',
     sha256Checksum: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-    sbomUrl: '/downloads/sbom-nex-portal.json',
-    truthState: 'VERIFIED',
-    evidenceLevel: 'LEVEL 3',
-    evidenceDescription: 'Next.js 14 build verified, interactive Web Crypto PQC and NTT demos passing live in-browser tests.',
-    localPath: 'src/app/'
+    sbomUrl: '/downloads/sbom-nex-portal.json'
   },
   {
     id: 'NEX-PQC',
@@ -48,15 +40,11 @@ export const REGISTERED_PRODUCTS: ProductRegistryEntry[] = [
     description: 'Post-Quantum Cryptography suite implementing FIPS 203 (ML-KEM) & FIPS 204 (ML-DSA).',
     priceUSD: 12500,
     enterprisePriceUSD: 120000,
-    buildStatus: 'VERIFIED',
+    buildStatus: 'ACCESS UNVERIFIED',
     demoRoute: '/demos/pqc',
     downloadArtifact: '/downloads/core-sec-pqc-v1.0.0.tar.gz',
     sha256Checksum: 'a7c9f82d01e4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8',
-    sbomUrl: '/downloads/sbom-core-sec-pqc.json',
-    truthState: 'VERIFIED',
-    evidenceLevel: 'LEVEL 3',
-    evidenceDescription: 'Implemented FIPS 203/204 algorithms in JARVIS engine; NIST cryptographic validation pending.',
-    localPath: 'src/lib/jarvis-engine.ts'
+    sbomUrl: '/downloads/sbom-core-sec-pqc.json'
   },
   {
     id: 'NEX-NTT',
@@ -70,15 +58,11 @@ export const REGISTERED_PRODUCTS: ProductRegistryEntry[] = [
     description: 'High-performance Number Theoretic Transform polynomial arithmetic core over prime moduli.',
     priceUSD: 25000,
     enterprisePriceUSD: 250000,
-    buildStatus: 'VERIFIED',
+    buildStatus: 'ACCESS UNVERIFIED',
     demoRoute: '/demos/ntt',
     downloadArtifact: '/downloads/core-sec-ntt-rtl.tar.gz',
     sha256Checksum: 'f1e2d3c4b5a69887766554433221100f8e7d6c5b4a3928170615243342516071',
-    sbomUrl: '/downloads/sbom-core-sec-ntt.json',
-    truthState: 'VERIFIED',
-    evidenceLevel: 'LEVEL 3',
-    evidenceDescription: 'Forward and inverse NTT mathematical recovery verified in automated unit tests (test/ntt.test.js).',
-    localPath: 'test/ntt.test.js'
+    sbomUrl: '/downloads/sbom-core-sec-ntt.json'
   },
   {
     id: 'NEX-DAGM',
@@ -92,15 +76,11 @@ export const REGISTERED_PRODUCTS: ProductRegistryEntry[] = [
     description: 'Deterministic Autonomous Guardrail Mesh & Proof-Before-Trust Execution Kernel.',
     priceUSD: 15000,
     enterprisePriceUSD: 150000,
-    buildStatus: 'VERIFIED',
+    buildStatus: 'SUCCESS',
     demoRoute: '/demos/pqc',
     downloadArtifact: '/downloads/nexorian-dagm-v1.0.0.tar.gz',
     sha256Checksum: 'b82d01e4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9',
-    sbomUrl: '/downloads/sbom-nex-dagm.json',
-    truthState: 'VERIFIED',
-    evidenceLevel: 'LEVEL 3',
-    evidenceDescription: 'Architecture and state mutation invariants implemented in src/lib/jarvis-engine.ts.',
-    localPath: 'src/lib/jarvis-engine.ts'
+    sbomUrl: '/downloads/sbom-nex-dagm.json'
   },
   {
     id: 'NEX-VITA',
@@ -114,14 +94,10 @@ export const REGISTERED_PRODUCTS: ProductRegistryEntry[] = [
     description: 'Automated DeFi asset allocation and smart contract wealth management engine.',
     priceUSD: 9900,
     enterprisePriceUSD: 95000,
-    buildStatus: 'PENDING',
+    buildStatus: 'ACCESS UNVERIFIED',
     downloadArtifact: '/downloads/vita-crypto-v1.0.0.tar.gz',
     sha256Checksum: 'c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9f82d01e4b3',
-    sbomUrl: '/downloads/sbom-vita-crypto.json',
-    truthState: 'EXISTING',
-    evidenceLevel: 'LEVEL 1',
-    evidenceDescription: 'Smart contract specification and portfolio parameters registered locally.',
-    localPath: 'src/lib/products-registry.ts'
+    sbomUrl: '/downloads/sbom-vita-crypto.json'
   },
   {
     id: 'NEX-GTLM',
@@ -135,14 +111,10 @@ export const REGISTERED_PRODUCTS: ProductRegistryEntry[] = [
     description: 'High-determinism computational engine and hardware control RTL IP core.',
     priceUSD: 35000,
     enterprisePriceUSD: 350000,
-    buildStatus: 'PENDING',
+    buildStatus: 'ACCESS UNVERIFIED',
     downloadArtifact: '/downloads/hd-gtlm-rtl-v1.0.0.tar.gz',
     sha256Checksum: 'd1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9f82d01e4b3c2',
-    sbomUrl: '/downloads/sbom-hd-gtlm.json',
-    truthState: 'TARGET',
-    evidenceLevel: 'LEVEL 1',
-    evidenceDescription: 'RTL specification documented; synthesis and physical timing verification pending.',
-    localPath: 'src/lib/products-registry.ts'
+    sbomUrl: '/downloads/sbom-hd-gtlm.json'
   }
 ];
 

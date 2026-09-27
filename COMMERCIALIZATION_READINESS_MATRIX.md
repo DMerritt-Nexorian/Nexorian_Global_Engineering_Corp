@@ -1,37 +1,32 @@
-# Commercialization Readiness Matrix & Local Asset Reconciliation
+# Commercialization Readiness Matrix
 
 **Nexorian Corporation / Executive Systems ARCS Group**
 **Control Repository:** `Nexorian_Global_Engineering_Corp`
 
 ---
 
-## Authoritative Asset & Portfolio Reconciliation Matrix
+## Portfolio Assessment Matrix
 
-| ID | Repository / Asset | Local Module Location | Type | Build / Test Status | Security Status | Current Implementation State | Remaining Engineering Work | External Validation Needed | Evidence Level |
-|---|--------------------|-----------------------|------|---------------------|-----------------|------------------------------|----------------------------|----------------------------|----------------|
-| `NEX-PORTAL` | `Nexorian_Global_Engineering_Corp` | `/` (`src/app`, `src/lib`) | Integrated System | `VERIFIED` | Clean (No exposed secrets) | `EXISTING` + `VERIFIED` | Continuous portal UI/UX enhancements | Optional Third-Party VDR Audit | LEVEL 3 |
-| `NEX-PQC` | `CORE_SEC_PQC` | `src/lib/jarvis-engine.ts` | Local Subsystem | `VERIFIED` | Clean (FIPS 203/204 specs) | `EXISTING` + `VERIFIED` | Full Rust crate native binding | FIPS 203/204 NIST Cryptographic Certification | LEVEL 3 |
-| `NEX-NTT` | `Core_Sec_NTT` | `test/ntt.test.js` & `src/lib/jarvis-engine.ts` | Local Subsystem | `VERIFIED` | Clean | `EXISTING` + `VERIFIED` | RTL core synthesis & verilator simulation harness | Formal mathematical verification & side-channel analysis | LEVEL 3 |
-| `NEX-DAGM` | `Nexorian_DAGM_Guardrail` | `src/lib/jarvis-engine.ts` | Local Subsystem | `VERIFIED` | Clean (Rule evaluation gates) | `EXISTING` + `VERIFIED` | Distributed multi-agent consensus | Independent AI safety audit | LEVEL 3 |
-| `NEX-VITA` | `Vita-Crypto-Wealth` | `src/lib/products-registry.ts` | Subsystem Spec | `EXISTING` | Clean | `EXISTING` | On-chain EVM deployment & web3 connector | Smart contract security audit | LEVEL 1 |
-| `NEX-GTLM` | `HD-GTLM` | `src/lib/products-registry.ts` | Subsystem Spec | `TARGET` | Clean | `TARGET` | SystemVerilog core RTL synthesis | Physical chip timing verification | LEVEL 1 |
-| `NEX-GEN` | `Core_Gen` | `src/lib/products-registry.ts` | Subsystem Spec | `EXISTING` | Clean | `EXISTING` | PyTorch model optimization & bio-safety guardrails | Clinical / Bio-safety review | LEVEL 1 |
-| `NEX-GLOBAL` | `CORE_GLOBAL` | `src/lib/products-registry.ts` | Subsystem Spec | `EXISTING` | Clean | `EXISTING` | Distributed node mesh IPC wire protocol | Network security audit | LEVEL 1 |
-| `NEX-TIME` | `Core_Quantum_Time` | `src/lib/products-registry.ts` | Subsystem Spec | `EXISTING` | Clean | `EXISTING` | PTP IEEE 1588 hardware timestamp driver | Atomic clock telemetry validation | LEVEL 1 |
-| `NEX-CTRL` | `Integrated_Control_Core` | `src/lib/products-registry.ts` | Subsystem Spec | `EXISTING` | Clean | `EXISTING` | Real-time RTOS sensor loop integration | Hardware-in-the-loop (HIL) testing | LEVEL 1 |
-| `NEX-BMS` | `Solid_State_BMS` | `src/lib/products-registry.ts` | Subsystem Spec | `EXISTING` | Clean | `EXISTING` | Cell balancing telemetry & firmware drivers | Safety certification (ISO 26262) | LEVEL 1 |
-| `NEX-AGRI` | `CORE_AGRI` | `src/lib/products-registry.ts` | Subsystem Spec | `EXISTING` | Clean | `EXISTING` | Actuator motor control firmware | Environmental field validation | LEVEL 1 |
-| `NEX-JARVIS` | `Nexorian_JARVIS_Core` | `src/lib/jarvis-engine.ts` | Local Engine | `VERIFIED` | Clean | `EXISTING` + `VERIFIED` | LLM web socket agent IPC | Human operator safety verification | LEVEL 3 |
-| `NEX-VDR` | `Nexorian_VDR_Airgap` | `src/app/dataroom` | Integrated System | `VERIFIED` | Clean | `EXISTING` + `VERIFIED` | Client-side WASM encryption layer | Air-gap penetration audit | LEVEL 3 |
-| `NEX-WASM` | `Nexorian_WASM_PQC_Bridge` | `src/lib/jarvis-engine.ts` | Local Subsystem | `VERIFIED` | Clean | `EXISTING` + `VERIFIED` | Native WASM packaging | Cross-browser performance benchmarking | LEVEL 3 |
-| `NEX-TELEM` | `Nexorian_Telemetry_Engine` | `src/app/founder` | Integrated System | `VERIFIED` | Clean | `EXISTING` + `VERIFIED` | High-frequency gRPC stream collector | Scale stress testing | LEVEL 3 |
-| `NEX-LIC` | `Nexorian_License_Authority` | `src/lib/entitlement.ts` | Local Module | `VERIFIED` | Clean (HMAC Timing-Safe) | `EXISTING` + `VERIFIED` | Stripe webhook event handler wiring | Merchant of Record onboarding | LEVEL 3 |
-| `NEX-SMART` | `Nexorian_Smart_Contracts` | `src/lib/products-registry.ts` | Subsystem Spec | `EXISTING` | Clean | `EXISTING` | Smart contract unit tests & deploy script | On-chain security audit | LEVEL 1 |
-| `NEX-RTL` | `Nexorian_RTL_Sim_Bench` | `src/lib/products-registry.ts` | Subsystem Spec | `TARGET` | Clean | `TARGET` | Verilator simulation test harness | Hardware synthesis verification | LEVEL 1 |
-| `NEX-DOCS` | `Nexorian_Docs_Spec_Master` | `/` (Markdown Root) | Local Docs | `VERIFIED` | Clean | `EXISTING` + `VERIFIED` | Auto-generated OpenAPI specs | Legal review of compliance terms | LEVEL 3 |
+| Repository / Asset | Proposed Commercial Status | Technical Assessment | Build / Test Status | Security Scan | License Audit | Third-Party Notices | Installation Tested | Release Artifact | External Validation Required | Legal Review Required | Gate H1 (Repo) | Gate H3 (Payment) | Gate H5 (Release) | Gate H6 (Commercial) | Commercialization Blockers |
+|--------------------|----------------------------|---------------------|---------------------|---------------|---------------|---------------------|---------------------|------------------|------------------------------|-----------------------|----------------|-------------------|-------------------|-------------------|---------------------------|
+| `Nexorian_Global_Engineering_Corp` | `STATUS A — TECHNICALLY READY FOR HUMAN REVIEW` | Verified Next.js Portal & VDR | `VERIFIED` | Clean (No exposed secrets) | Proprietary Drafted | Completed | Verified | Staged | No | Yes | `APPROVED` | `PENDING` | `PENDING` | `PENDING` | Awaiting Human Gate H3, H4, H5 Approval |
+| `Vita-Crypto-Wealth` | `STATUS B — CONDITIONAL` | Web3 / DeFi Asset Manager | `ACCESS UNVERIFIED` | Unverified | Proprietary Drafted | Pending Remote | Pending Remote | Pending Remote | Yes (Smart Contract Audit) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Remote repo access unverified; Contract audit required |
+| `Core_Sec_NTT` | `STATUS C — EXTERNAL VALIDATION REQUIRED` | NTT Math Accelerator | `ACCESS UNVERIFIED` | Unverified | Dual / Proprietary | Pending Remote | Pending Remote | Pending Remote | Yes (NIST / Math Validation) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Remote repo access unverified; Formal verification required |
+| `CORE_SEC_PQC` | `STATUS C — EXTERNAL VALIDATION REQUIRED` | FIPS 203/204 PQC Library | `ACCESS UNVERIFIED` | Unverified | Proprietary Drafted | Pending Remote | Pending Remote | Pending Remote | Yes (FIPS / Cryptographic Audit) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Remote repo access unverified; FIPS certification pending |
+| `HD-GTLM` | `STATUS D — DEVELOPMENT` | Hardware Control RTL IP | `ACCESS UNVERIFIED` | Unverified | Proprietary IP | Pending Remote | Pending Remote | Pending Remote | Yes (Silicon / Timing Verification) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Active development; Silicon simulation pending |
+| `Core_Gen` | `STATUS E — RESEARCH / EXPERIMENTAL` | Bio-Intelligence Framework | `ACCESS UNVERIFIED` | Unverified | Evaluation Only | Pending Remote | Pending Remote | Pending Remote | Yes (Clinical / Bio Safety Review) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Research software; Medical disclaimer required |
+| `CORE_GLOBAL` | `STATUS D — DEVELOPMENT` | Autonomous Mesh Network | `ACCESS UNVERIFIED` | Unverified | Enterprise Proprietary | Pending Remote | Pending Remote | Pending Remote | Yes (Network Security Audit) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Active development; Remote repo access unverified |
+| `Core_Quantum_Time` | `STATUS E — RESEARCH / EXPERIMENTAL` | Precision Time Layer | `ACCESS UNVERIFIED` | Unverified | Research License | Pending Remote | Pending Remote | Pending Remote | Yes (Telemetry / IEEE 1588 Testing) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Experimental layer; Precision timing verification pending |
+| `Integrated_Control_Core` | `STATUS D — DEVELOPMENT` | Autonomous Control Engine | `ACCESS UNVERIFIED` | Unverified | Proprietary Drafted | Pending Remote | Pending Remote | Pending Remote | Yes (Hardware-in-the-Loop Testing) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Active development; HIL testing required |
+| `Solid_State_BMS` | `STATUS D — DEVELOPMENT` | Battery Management Firmware | `ACCESS UNVERIFIED` | Unverified | Proprietary Drafted | Pending Remote | Pending Remote | Pending Remote | Yes (Hardware / Safety Certification) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Active development; Hardware safety validation required |
+| `CORE_AGRI` | `STATUS D — DEVELOPMENT` | AgTech Control Engine | `ACCESS UNVERIFIED` | Unverified | Proprietary Drafted | Pending Remote | Pending Remote | Pending Remote | Yes (Field Testing & Environmental) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Active development; Field testing required |
 
 ---
 
-## Reconciliation Notes
-- All 20 assets mapped to either local control repository source modules, unit tests, or registered specs in `src/lib/products-registry.ts`.
-- `ACCESS UNVERIFIED` reconciled to `VERIFIED` for all locally implemented subsystems (`NEX-PORTAL`, `NEX-PQC`, `NEX-NTT`, `NEX-DAGM`, `NEX-JARVIS`, `NEX-VDR`, `NEX-WASM`, `NEX-TELEM`, `NEX-LIC`, `NEX-DOCS`).
+## Status Key
+- `STATUS A`: Technically Ready for Human Commercial Release Review
+- `STATUS B`: Conditional Release (Requires pre-requisites like audit)
+- `STATUS C`: Engineering Complete / External Validation Required
+- `STATUS D`: Active Engineering Development
+- `STATUS E`: Research / Experimental / Proof-of-Concept
+- `STATUS F`: Private / Internal Only
