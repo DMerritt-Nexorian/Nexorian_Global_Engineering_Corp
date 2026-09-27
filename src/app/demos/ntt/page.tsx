@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 
 // Real Number Theoretic Transform (NTT) Implementation over prime modulus q = 12289 (Kyber/NTT prime)
 const Q = 12289;
-const PSI = 1479; // Primitive 256-th root of unity mod q
+const OMEGA = 4043; // Primitive 8-th root of unity modulo 12289 (4043^8 mod 12289 = 1)
 
 // Modular exponentiation (a^b mod m)
 const power = (a: number, b: number, m: number): number => {
   let res = 1;
-  a = a % m;
+  a = (a % m + m) % m;
   while (b > 0) {
     if (b % 2 === 1) res = (res * a) % m;
     b = Math.floor(b / 2);
@@ -25,12 +25,11 @@ const modInverse = (n: number, m: number): number => power(n, m - 2, m);
 const forwardNTT = (poly: number[]): number[] => {
   const N = poly.length;
   const result = new Array(N).fill(0);
-  const omega = power(PSI, 256 / N, Q); // N-th root of unity
 
   for (let k = 0; k < N; k++) {
     let sum = 0;
     for (let n = 0; n < N; n++) {
-      const factor = power(omega, k * n, Q);
+      const factor = power(OMEGA, k * n, Q);
       sum = (sum + poly[n] * factor) % Q;
     }
     result[k] = (sum + Q) % Q;
@@ -42,8 +41,7 @@ const forwardNTT = (poly: number[]): number[] => {
 const inverseNTT = (nttPoly: number[]): number[] => {
   const N = nttPoly.length;
   const result = new Array(N).fill(0);
-  const omega = power(PSI, 256 / N, Q);
-  const invOmega = modInverse(omega, Q);
+  const invOmega = modInverse(OMEGA, Q);
   const invN = modInverse(N, Q);
 
   for (let n = 0; n < N; n++) {
@@ -52,7 +50,7 @@ const inverseNTT = (nttPoly: number[]): number[] => {
       const factor = power(invOmega, k * n, Q);
       sum = (sum + nttPoly[k] * factor) % Q;
     }
-    result[n] = (sum * invN) % Q;
+    result[n] = ((sum % Q) * invN) % Q;
   }
   return result;
 };
