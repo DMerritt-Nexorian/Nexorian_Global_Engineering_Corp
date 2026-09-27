@@ -86,6 +86,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Sentinel-1 Architecture & Math Banner */}
+      <section style={{ borderBottom: '1px solid #1e293b', backgroundColor: '#0f172a', padding: '2.5rem 3rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+            [ CANONICAL RUNTIME ARCHITECTURE ]
+          </div>
+          <h2 style={{ fontSize: '1.35rem', color: '#f8fafc', fontWeight: 700, margin: '0 0 1rem 0' }}>
+            Sentinel-1 Deterministic Execution Runtime
+          </h2>
+          <p style={{ color: '#cbd5e1', fontSize: '0.925rem', lineHeight: 1.65, margin: 0, backgroundColor: '#0b0f17', padding: '1.25rem', borderRadius: '4px', border: '1px solid #1e293b', fontFamily: 'monospace' }}>
+            Sentinel-1 is a zero-cloud deterministic AI runtime architecture built around finite-field Galois dynamics (F_q), O(N log N) Number Theoretic Transforms (NTTs), and Deterministic Autonomous Guardrail Mesh (DAGM) execution graphs. Governed by &quot;Proof before Trust,&quot; the system is designed to support contractive-stability constraints represented by d/dt ||&delta;x(t)|| &le; -c ||&delta;x(t)|| through parameter projections &Pi;_C for controlled recursive learning.
+          </p>
+        </div>
+      </section>
+
       {/* Technology Domains Section */}
       <section id="technology" style={{ padding: '5rem 3rem', borderBottom: '1px solid #1e293b', backgroundColor: '#0b0f17' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>

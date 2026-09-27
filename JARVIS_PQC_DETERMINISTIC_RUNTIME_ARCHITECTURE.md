@@ -91,7 +91,7 @@ State mutation is split into discrete stages:
 
 ### 3.3 Contractive Safety Kernel & Projection $(\Pi_{\mathcal{C}})$
 To prevent LLM drift or infinite looping, state updates $x(t)$ are constrained via a continuous-to-discrete Lyapunov stability condition:
-$$\frac{d}{dt} |\delta x(t)| \leq -c |\delta x(t)|$$
+$$\frac{d}{dt}\|\delta x(t)\| \le -c\|\delta x(t)\|$$
 The projection operator $\Pi_{\mathcal{C}}(x)$ maps any parameter update back onto the closed convex safety set $\mathcal{C}$, enforcing bounded execution budgets and strict resource ceilings.
 
 ---
