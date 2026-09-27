@@ -1,0 +1,25 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "Nexorian-Portal-v1.0.0-SBOM",
+  "documentNamespace": "https://nexorian.com/spdx/nex-portal-1.0.0",
+  "creationInfo": {
+    "creators": ["Organization: Nexorian Global Engineering Corp"],
+    "created": "2026-09-26T22:30:00Z"
+  },
+  "packages": [
+    {
+      "name": "next",
+      "versionInfo": "14.2.35",
+      "licenseConcluded": "MIT",
+      "copyrightText": "Copyright (c) Vercel, Inc."
+    },
+    {
+      "name": "react",
+      "versionInfo": "18.3.1",
+      "licenseConcluded": "MIT",
+      "copyrightText": "Copyright (c) Meta Platforms, Inc."
+    }
+  ]
+}
