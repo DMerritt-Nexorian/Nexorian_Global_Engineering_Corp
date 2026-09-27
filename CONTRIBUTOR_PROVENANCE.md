@@ -10,7 +10,7 @@
 | Contributor / Identity | GitHub Handle | Commit Count (Control Repo) | Areas Changed | Known AI / Bot Attribution | Assignment Status | Commercialization Impact |
 |------------------------|---------------|----------------------------|---------------|----------------------------|-------------------|--------------------------|
 | Dennis W. Merritt | `DMerritt-Nexorian` | 1 (Initial Commit) | Entire Root Workspace | None | Sole Rights Holder | None (Authorized Owner) |
-| Executive Systems ARCS Group | Staging Engine | 0 (Drafting Staging) | Commercialization Staging Docs & Web Portal | Automated Staging Engine | Governed by MasterPrompt | Historical Tool Assistance; No IP Ownership Claimed |
+| Jules (Autonomous Agent) | `jules` / Sandbox | 0 (Drafting Staging) | Commercialization Staging Docs & Web Portal | Automated Agent Assistance | Governed by MasterPrompt | Historical Tool Assistance; No IP Ownership Claimed |
 
 ---
 

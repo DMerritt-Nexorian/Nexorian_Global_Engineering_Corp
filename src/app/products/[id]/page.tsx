@@ -30,11 +30,6 @@ export default function DynamicProductPage({ params }: { params: { id: string } 
               <div><strong>BUILD STATUS:</strong> <span style={{ color: product.buildStatus === 'SUCCESS' ? '#22c55e' : '#f59e0b' }}>{product.buildStatus}</span></div>
               <div><strong>LICENSE:</strong> <span style={{ color: '#cbd5e1' }}>{product.licenseType}</span></div>
               <div><strong>PROPOSED STATUS:</strong> <span style={{ color: '#fbbf24' }}>{product.proposedStatus}</span></div>
-              <div><strong>TRUTH STATE:</strong> <span style={{ color: product.truthState === 'VERIFIED' ? '#22c55e' : product.truthState === 'EXISTING' ? '#38bdf8' : '#f59e0b' }}>{product.truthState}</span></div>
-              <div><strong>EVIDENCE LEVEL:</strong> <span style={{ color: '#38bdf8' }}>{product.evidenceLevel}</span></div>
-            </div>
-            <div style={{ marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px solid #1e293b', fontSize: '0.8rem', color: '#94a3b8' }}>
-              <strong>EVIDENCE BASIS:</strong> {product.evidenceDescription}
             </div>
           </div>
 
