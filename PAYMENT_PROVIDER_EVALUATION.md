@@ -33,7 +33,7 @@ To commercialize software products across the Project Nexus portfolio while stri
 
 ## Recommended Architecture: Provider-Agnostic Hybrid Gateway
 
-Jules recommends implementing a **Provider Abstraction Layer** (`PaymentProviderAdapter` interface) in the Next.js web portal:
+The Executive Systems ARCS Group recommends implementing a **Provider Abstraction Layer** (`PaymentProviderAdapter` interface) in the Next.js web portal:
 
 ```
 Customer
