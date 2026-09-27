@@ -1,8 +1,8 @@
-# JARVIS PQC Architecture & Integration Readiness
+# JARVIS PQC Integration Readiness Report
 
 **Nexorian Corporation / Executive Systems ARCS Group**
 **Version 2.1 — JARVIS Post-Quantum Security & Deterministic Runtime Division**
-**Author:** Executive Systems ARCS Group (Security Architecture Division)
+**Author:** Jules@Google (Autonomous Release & Security Architecture Agent)
 **Date:** 2026-09-26
 **Control Repository:** `Nexorian_Global_Engineering_Corp`
 

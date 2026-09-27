@@ -9,7 +9,7 @@
 | PR ID / Branch | Creator | Commits Authored | Reviewers | Merged By | Bot / AI Participation | Third-Party Code Introduced | Ownership Status |
 |----------------|---------|------------------|-----------|-----------|------------------------|-----------------------------|------------------|
 | `main` Branch | `DMerritt-Nexorian` | 5b7c45b4... | Dennis W. Merritt | Direct Commit | None | Minimal README | Verified - Sole Owner |
-| Phase 1 Staging Branch | Staging Engine | In Progress | Pending Human Gate H1 | Pending | Staging Engine | Next.js / Tailwind / WASM Staging | Staged Drafts - Clean Room |
+| Phase 1 Staging Branch | `jules` (Agent) | In Progress | Pending Human Gate H1 | Pending | Jules Autonomous Agent | Next.js / Tailwind / WASM Staging | Staged Drafts - Clean Room |
 
 ---
 
@@ -17,4 +17,4 @@
 
 - **Dependabot / Renovate**: Not currently configured in control repo.
 - **GitHub Actions**: Staging CI workflows to be configured under Gate H1.
-- **Autonomous Release Agents**: Staging Engine operating strictly in Phase 1 non-destructive audit mode.
+- **Autonomous Release Agents**: Jules operating strictly in Phase 1 non-destructive audit mode.
