@@ -1,0 +1,16 @@
+{
+  "product": "Nexorian Executive Web Portal & VDR",
+  "productId": "NEX-PORTAL",
+  "version": "1.0.0-staging",
+  "release_commit": "5b7c45b490c91ef9c48ceaf5f81487b94ede8893",
+  "build_timestamp": "2026-09-26T22:30:00Z",
+  "platform": "Node.js / Next.js / WASM",
+  "architecture": "x86_64 / arm64",
+  "artifact": "nexorian-portal-v1.0.0-staging.tar.gz",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "license": "Proprietary Commercial Lease",
+  "evidence_level": "VERIFIED",
+  "proposed_status": "STATUS A — TECHNICALLY READY FOR HUMAN REVIEW",
+  "human_approval_status": "GATE_H1_APPROVED",
+  "external_release_status": "GATE_H5_PENDING"
+}
