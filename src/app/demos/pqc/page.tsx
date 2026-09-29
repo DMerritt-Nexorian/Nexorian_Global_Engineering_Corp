@@ -1,6 +1,87 @@
 'use client';
 
 import React, { useState } from 'react';
+import {
+  generateMlDsaKeypair,
+  signMlDsaMessage,
+  verifyMlDsaSignature,
+  generateMlKemKeypair,
+  encapsulateMlKem,
+  decapsulateMlKem,
+  PqcKeypairResult,
+  MlDsaSignatureResult,
+  MlDsaVerificationResult,
+  MlKemEncapsulationResult,
+  MlKemDecapsulationResult
+} from '@/lib/pqc-kernel';
+
+export default function PQCDemoPage() {
+  // ML-DSA State
+  const [dsaKeypair, setDsaKeypair] = useState<PqcKeypairResult | null>(null);
+  const [message, setMessage] = useState<string>('PROJECT NEXUS / JARVIS STATE MUTATION COMMAND #1042');
+  const [signatureResult, setSignatureResult] = useState<MlDsaSignatureResult | null>(null);
+  const [verificationResult, setVerificationResult] = useState<MlDsaVerificationResult | null>(null);
+  const [tamperTestResult, setTamperTestResult] = useState<MlDsaVerificationResult | null>(null);
+
+  // ML-KEM State
+  const [kemKeypair, setKemKeypair] = useState<PqcKeypairResult | null>(null);
+  const [encapResult, setEncapResult] = useState<{ result: MlKemEncapsulationResult; rawSharedSecret: string } | null>(null);
+  const [decapResult, setDecapResult] = useState<MlKemDecapsulationResult | null>(null);
+  const [kemTamperResult, setKemTamperResult] = useState<MlKemDecapsulationResult | null>(null);
+
+  const [loading, setLoading] = useState(false);
+
+  // 1. Generate ML-DSA Keypair
+  const handleGenerateDsaKeypair = async () => {
+    setLoading(true);
+    const kp = await generateMlDsaKeypair();
+    setDsaKeypair(kp);
+    setSignatureResult(null);
+    setVerificationResult(null);
+    setTamperTestResult(null);
+    setLoading(false);
+  };
+
+  // 2. Sign Message Payload
+  const handleSignMessage = async () => {
+    if (!dsaKeypair) return;
+    setLoading(true);
+    const sig = await signMlDsaMessage(dsaKeypair.secretKeyHandle, message);
+    setSignatureResult(sig);
+    setVerificationResult(null);
+    setTamperTestResult(null);
+    setLoading(false);
+  };
+
+  // 3. Verify Signature
+  const handleVerifySignature = async () => {
+    if (!dsaKeypair || !signatureResult) return;
+    setLoading(true);
+    const res = await verifyMlDsaSignature(dsaKeypair.publicKeyHex, message, signatureResult.signatureHex, dsaKeypair.secretKeyHandle);
+    setVerificationResult(res);
+
+    // Also run tamper check on altered message
+    const tamperRes = await verifyMlDsaSignature(dsaKeypair.publicKeyHex, message + ' [TAMPERED_PAYLOAD]', signatureResult.signatureHex, dsaKeypair.secretKeyHandle);
+    setTamperTestResult(tamperRes);
+    setLoading(false);
+  };
+
+  // 4. ML-KEM Keygen & Encapsulate & Decapsulate
+  const handleRunKemSuite = async () => {
+    setLoading(true);
+    const kp = await generateMlKemKeypair();
+    setKemKeypair(kp);
+
+    const encap = await encapsulateMlKem(kp.publicKeyHex);
+    setEncapResult(encap);
+
+    const decap = await decapsulateMlKem(kp.secretKeyHandle, encap.result.ciphertextHex, encap.rawSharedSecret, false);
+    setDecapResult(decap);
+
+    const decapTamper = await decapsulateMlKem(kp.secretKeyHandle, encap.result.ciphertextHex, encap.rawSharedSecret, true);
+    setKemTamperResult(decapTamper);
+
+    setLoading(false);
 
 export default function PQCDemoPage() {
   const [keyPair, setKeyPair] = useState<{ publicKey: string; privateKey: string } | null>(null);
