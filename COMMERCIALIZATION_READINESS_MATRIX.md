@@ -5,11 +5,20 @@
 
 ---
 
-## Portfolio Assessment Matrix
+## Corporate Control Plane (Platform Substrate)
+
+> **Note:** `Nexorian_Global_Engineering_Corp` serves exclusively as the central Corporate Control Surface, Intelligence Platform, Evidence System, VDR, and Operating Environment. It is **NOT** a commercial portfolio product for sale or assignment of commercial pricing.
+
+| Control Plane Asset | System Role | Build / Test Status | Security Scan | License Audit | Gate H1 (Repo) | Platform Status |
+|---|---|---|---|---|---|---|
+| `Nexorian_Global_Engineering_Corp` | Central Control Plane & VDR | `VERIFIED` | Clean (No exposed secrets) | Corporate Proprietary | `APPROVED` | `STATUS A — TECHNICALLY READY FOR HUMAN REVIEW` |
+
+---
+
+## Portfolio Assessment Matrix (10 Commercial Products)
 
 | Repository / Asset | Proposed Commercial Status | Technical Assessment | Build / Test Status | Security Scan | License Audit | Third-Party Notices | Installation Tested | Release Artifact | External Validation Required | Legal Review Required | Gate H1 (Repo) | Gate H3 (Payment) | Gate H5 (Release) | Gate H6 (Commercial) | Commercialization Blockers |
 |--------------------|----------------------------|---------------------|---------------------|---------------|---------------|---------------------|---------------------|------------------|------------------------------|-----------------------|----------------|-------------------|-------------------|-------------------|---------------------------|
-| `Nexorian_Global_Engineering_Corp` | `STATUS A — TECHNICALLY READY FOR HUMAN REVIEW` | Verified Next.js Portal & VDR | `VERIFIED` | Clean (No exposed secrets) | Proprietary Drafted | Completed | Verified | Staged | No | Yes | `APPROVED` | `PENDING` | `PENDING` | `PENDING` | Awaiting Human Gate H3, H4, H5 Approval |
 | `Vita-Crypto-Wealth` | `STATUS B — CONDITIONAL` | Web3 / DeFi Asset Manager | `ACCESS UNVERIFIED` | Unverified | Proprietary Drafted | Pending Remote | Pending Remote | Pending Remote | Yes (Smart Contract Audit) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Remote repo access unverified; Contract audit required |
 | `Core_Sec_NTT` | `STATUS C — EXTERNAL VALIDATION REQUIRED` | NTT Math Accelerator | `ACCESS UNVERIFIED` | Unverified | Dual / Proprietary | Pending Remote | Pending Remote | Pending Remote | Yes (NIST / Math Validation) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Remote repo access unverified; Formal verification required |
 | `CORE_SEC_PQC` | `STATUS C — EXTERNAL VALIDATION REQUIRED` | FIPS 203/204 PQC Library | `ACCESS UNVERIFIED` | Unverified | Proprietary Drafted | Pending Remote | Pending Remote | Pending Remote | Yes (FIPS / Cryptographic Audit) | Yes | `PENDING` | `PENDING` | `PENDING` | `PENDING` | Remote repo access unverified; FIPS certification pending |

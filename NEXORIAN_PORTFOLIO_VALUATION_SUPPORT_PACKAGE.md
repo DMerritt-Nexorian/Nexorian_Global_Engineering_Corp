@@ -3,14 +3,15 @@
 **Nexorian Corporation / Executive Systems ARCS Group**
 **Author / Founder:** Dennis W. Merritt
 **Directive Standard:** Master Directive Phase 0.6 & Phase 12 (IP Valuation Architecture)
-**Date:** 2026-09-26
 **Control Repository:** `Nexorian_Global_Engineering_Corp`
 
 ---
 
 ## Valuation Methodology & Architecture
 
-In accordance with Phase 0.6 and Phase 12 of the Master Valuation Directive, the valuation of the Project Nexus portfolio is evaluated across **four distinct financial layers**. Commercial SaaS subscription pricing is strictly separated from the underlying replacement cost, strategic enterprise licensing potential, and portfolio IP asset value.
+In accordance with Phase 0.6 and Phase 12 of the Master Valuation Directive, the valuation of the Project Nexus portfolio is evaluated across **four distinct financial layers**. Commercial SaaS subscription pricing is strictly separated from underlying replacement cost, strategic enterprise licensing potential, and portfolio IP asset value.
+
+> **Corporate Platform Exemption:** The Nexorian Executive Web Portal & VDR (`Nexorian_Global_Engineering_Corp`) is classified strictly as the Corporate/Founder Platform and Control Surface. It is **NOT** listed as a commercial product for sale or assigned commercial lease pricing.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -23,16 +24,23 @@ In accordance with Phase 0.6 and Phase 12 of the Master Valuation Directive, the
 ┌───────┴───────────────┐   ┌──────────┴────────────┐   ┌──────────────┴───────┐
 │ 2. PRODUCT PRICING    │   │ 3. ENTERPRISE LICENSE │   │ 4. STRATEGIC IP      │
 │   (Commercial Leases) │   │   (OEM / On-Prem / RTL)│   │   ASSET VALUE        │
-└───────────────────────┘   └───────────────────────┘   └──────────────────────┘
+└───────────────────────┘   └───────────────────────┘   └───────────────────────┘
 ```
 
 ---
 
-## Multi-Tier Valuation Matrix
+## Corporate Platform Substrate (Control Surface)
+
+| Platform Asset | Repository | Role | Annual Commercial Lease | Estimated Replacement Cost | Strategic Asset Valuation | Evidence Level |
+|---|---|---|---|---|---|---|
+| **Nexorian Corporate Control Surface & VDR** | `Nexorian_Global_Engineering_Corp` | Central Control Surface & Command Plane | *EXCLUDED (Corporate Platform)* | $350,000 | $1,500,000 – $3,000,000 | `[VERIFIED]` |
+
+---
+
+## Portfolio Commercial Products Valuation Matrix (10 Products)
 
 | Asset / Product Name | Repository | Category / IP Domain | Annual Commercial Lease (Product) | Enterprise OEM / On-Prem License | Estimated Replacement Cost | Strategic Asset Valuation Range | Evidence Level |
 |----------------------|------------|----------------------|-----------------------------------|----------------------------------|----------------------------|---------------------------------|----------------|
-| **Nexorian Executive Web Portal & VDR** | `Nexorian_Global_Engineering_Corp` | Web Platform / VDR / Command Center | $4,999 / year | $45,000 / year | $350,000 | $1,500,000 – $3,000,000 | `[VERIFIED]` |
 | **Core Sec Post-Quantum Cryptography** | `CORE_SEC_PQC` | Security / PQC Library (FIPS 203/204) | $12,500 / year | $120,000 / year | $1,200,000 | $8,000,000 – $15,000,000 | `[DOCUMENTED]` |
 | **Core Sec NTT Accelerator** | `Core_Sec_NTT` | Cryptographic Hardware IP | $25,000 / year | $250,000 / year (RTL License) | $1,800,000 | $12,000,000 – $25,000,000 | `[DOCUMENTED]` |
 | **JARVIS Deterministic Guardrail Mesh** | `JARVIS` Core | AI Safety / Execution Control | $15,000 / year | $150,000 / year | $950,000 | $10,000,000 – $20,000,000 | `[VERIFIED ARCHITECTURE]` |
