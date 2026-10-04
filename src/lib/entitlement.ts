@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import { EntitlementRecord } from './types';
 
 const MOCK_HMAC_SECRET = process.env.PAYMENT_WEBHOOK_SECRET || 'test_dev_hmac_secret_key_12345';
