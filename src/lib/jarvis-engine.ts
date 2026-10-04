@@ -8,6 +8,7 @@ import {
   AuthorityRole
 } from './types';
 import { JarvisWorldModel } from './jarvis-world-model';
+import { JarvisEvidenceEngine } from './jarvis-evidence-engine';
 import { SentinelGuard } from './sentinel-dagm';
 import { executeNTTTransformation } from './ntt-kernel';
 import {
@@ -27,12 +28,20 @@ import {
  */
 export class JarvisEngine {
   private static worldModel = new JarvisWorldModel();
+  private static evidenceEngine = new JarvisEvidenceEngine(this.worldModel);
 
   /**
    * Get reference to internal JarvisWorldModel instance.
    */
   public static getWorldModel(): JarvisWorldModel {
     return this.worldModel;
+  }
+
+  /**
+   * Get reference to internal JarvisEvidenceEngine instance.
+   */
+  public static getEvidenceEngine(): JarvisEvidenceEngine {
+    return this.evidenceEngine;
   }
 
   /**
