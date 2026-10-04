@@ -32,12 +32,30 @@ export interface EntitlementRecord {
   signature: string;
 }
 
+// ============================================================================
+// JARVIS & SENTINEL-1 HONEST TYPES
+// ============================================================================
+
+export type EpistemicStatus =
+  | 'VERIFIED'
+  | 'UNVERIFIED'
+  | 'OBSERVED'
+  | 'DERIVED'
+  | 'INFERRED'
+  | 'HYPOTHESIZED'
+  | 'UNKNOWN'
+  | 'CONFLICTING'
+  | 'STALE'
+  | 'FAILED'
+  | 'UNTESTED'
+  | 'UNIMPLEMENTED';
+
 export interface ProposedStateTransition {
   actionId: string;
   actionType: string;
   params: any;
   targetResource: string;
-  requesterRole: 'PUBLIC' | 'DEVELOPER' | 'FOUNDER' | 'SYSTEM';
+  requesterRole: 'PUBLIC' | 'DEVELOPER' | 'FOUNDER';
   timestamp: string;
 }
 
@@ -50,5 +68,30 @@ export interface SentinelValidationResult {
   pqcAlgorithm?: string;
 }
 
-// Re-export JARVIS Core Contracts from jarvis-contracts.ts
-export * from './jarvis-contracts';
+export interface JarvisQueryRequest {
+  query: string;
+  context?: 'PUBLIC' | 'FOUNDER' | 'DEVELOPER';
+  sessionToken?: string;
+}
+
+export interface JarvisQueryResponse {
+  answer: string;
+  truthState: EpistemicStatus;
+  evidenceLevel: string;
+  evidenceDetails: string;
+  governanceStatus: string;
+  executionTrace?: {
+    actionId: string;
+    actionType: string;
+    sentinelValidation: SentinelValidationResult;
+    resultOutput?: any;
+    executionTimeMs: number;
+  }[];
+  relatedProducts?: any[];
+  cognitionCost: {
+    cpuMs: number;
+    memoryMB: number | 'UNMEASURED';
+    cryptoOpsCount: number;
+    economicCost: 'UNMEASURED';
+  };
+}

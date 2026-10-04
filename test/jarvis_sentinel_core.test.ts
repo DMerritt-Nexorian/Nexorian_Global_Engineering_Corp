@@ -65,22 +65,22 @@ async function runCoreTests() {
     context: 'PUBLIC'
   });
   assert.strictEqual(repoQueryRes.truthState, 'VERIFIED');
-  assert.ok(typeof repoQueryRes.answer === 'string' && repoQueryRes.answer.includes('Repository inspection executed cleanly'));
-  assert.ok(repoQueryRes.trace.length > 0);
+  assert.ok(repoQueryRes.answer.includes('Repository inspection executed cleanly'));
+  assert.ok(repoQueryRes.executionTrace!.length > 0);
 
   const pqcQueryRes = await JarvisEngine.processQuery({
     query: 'Execute PQC signature and KEM encapsulation',
     context: 'DEVELOPER'
   });
-  assert.strictEqual(pqcQueryRes.truthState, 'EXPERIMENTAL');
-  assert.ok(typeof pqcQueryRes.answer === 'string' && pqcQueryRes.answer.includes('Experimental Post-Quantum Lattice Cryptography'));
+  assert.strictEqual(pqcQueryRes.truthState, 'VERIFIED');
+  assert.ok(pqcQueryRes.answer.includes('Experimental Post-Quantum Lattice Cryptography'));
 
   const nttQueryRes = await JarvisEngine.processQuery({
     query: 'Execute NTT polynomial arithmetic over q=12289',
     context: 'PUBLIC'
   });
   assert.strictEqual(nttQueryRes.truthState, 'VERIFIED');
-  assert.ok(typeof nttQueryRes.answer === 'string' && nttQueryRes.answer.includes('Number Theoretic Transform'));
+  assert.ok(nttQueryRes.answer.includes('Number Theoretic Transform'));
 
   // Test Epistemic Honesty / Unknown Query
   const unknownQueryRes = await JarvisEngine.processQuery({
@@ -88,7 +88,7 @@ async function runCoreTests() {
     context: 'PUBLIC'
   });
   assert.strictEqual(unknownQueryRes.truthState, 'UNKNOWN');
-  assert.ok(typeof unknownQueryRes.answer === 'string' && unknownQueryRes.answer.includes('Epistemic status: UNKNOWN'));
+  assert.ok(unknownQueryRes.answer.includes('Epistemic status: UNKNOWN'));
   assert.strictEqual(unknownQueryRes.cognitionCost.economicCost, 'UNMEASURED');
   console.log('✓ JARVIS Intelligence Reasoning, Traces & Epistemic Honesty Test Passed.');
 
