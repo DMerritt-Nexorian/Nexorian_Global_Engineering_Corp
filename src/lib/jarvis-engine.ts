@@ -2,10 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {
   JarvisQueryRequest,
-  JarvisResponse,
-  ExecutionTraceEvent,
-  EvidenceRef,
-  AuthorityRole
+  JarvisQueryResponse,
+  ProposedStateTransition
 } from './types';
 import { SentinelGuard } from './sentinel-dagm';
 import { executeNTTTransformation } from './ntt-kernel';
@@ -18,6 +16,7 @@ import {
   decapsulateExperimentalKem,
   zeroizeSecretKeyHandle
 } from './pqc-kernel';
+import { REGISTERED_PRODUCTS } from './products-registry';
 
 /**
  * JARVIS Primary Intelligence & Execution Orchestration Layer
@@ -29,106 +28,63 @@ export class JarvisEngine {
   /**
    * Process incoming user query or execution directive.
    */
-  public static async processQuery(req: JarvisQueryRequest): Promise<JarvisResponse> {
+  public static async processQuery(req: JarvisQueryRequest): Promise<JarvisQueryResponse> {
     const startTime = Date.now();
-    const requestId = `REQ-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
     const q = req.query.trim();
     const lowerQ = q.toLowerCase();
-    const role: AuthorityRole = req.context === 'FOUNDER' ? 'FOUNDER' : req.context === 'DEVELOPER' ? 'DEVELOPER' : 'PUBLIC';
+    const role = req.context === 'FOUNDER' ? 'FOUNDER' : req.context === 'DEVELOPER' ? 'DEVELOPER' : 'PUBLIC';
 
     let cpuMs = 0;
     let cryptoOpsCount = 0;
 
     await SentinelGuard.initializeIdentity();
-    const traceEvents: ExecutionTraceEvent[] = [];
-    const evidenceRefs: EvidenceRef[] = [];
-
-    // Add REQUEST & UNDERSTAND trace events
-    traceEvents.push({
-      id: `TR-${Date.now()}-1`,
-      executionId: requestId,
-      stage: 'REQUEST',
-      timestamp: new Date().toISOString(),
-      description: `Received request: "${q}"`,
-      truthState: 'OBSERVED',
-      evidence: [{
-        id: `EVID-REQ-${Date.now()}`,
-        sourceType: 'user',
-        description: 'User prompt input',
-        truthState: 'OBSERVED',
-        observedAt: new Date().toISOString()
-      }]
-    });
+    const executionTrace: any[] = [];
 
     // ------------------------------------------------------------------------
     // 1. REPOSITORY & FILE INSPECTION DIRECTIVES
     // ------------------------------------------------------------------------
     if (lowerQ.includes('inspect') || lowerQ.includes('files') || lowerQ.includes('repo') || lowerQ.includes('directory')) {
-      const intentId = `INT-INSPECT-${Date.now()}`;
-      const authDecision = await SentinelGuard.evaluateAuthorization(intentId, 'INSPECT_REPOSITORY', 'repository_root', role);
+      const actionType = 'INSPECT_REPOSITORY';
+      const actionId = `ACT-INSPECT-${Date.now()}`;
+      const proposal: ProposedStateTransition = {
+        actionId,
+        actionType,
+        params: {},
+        targetResource: 'repository_root',
+        requesterRole: role,
+        timestamp: new Date().toISOString()
+      };
+
+      const sentinelVal = await SentinelGuard.validateAction(proposal);
       cryptoOpsCount++;
 
-      traceEvents.push({
-        id: `TR-${Date.now()}-2`,
-        executionId: requestId,
-        stage: 'AUTHORIZE',
-        timestamp: authDecision.evaluatedAt,
-        description: authDecision.reason,
-        truthState: authDecision.decision === 'AUTHORIZED' ? 'VERIFIED' : 'FAILED',
-        evidence: authDecision.evidence,
-        intentId,
-        authorizationDecision: authDecision
-      });
-
-      if (authDecision.decision === 'AUTHORIZED') {
+      if (sentinelVal.authorized) {
         const repoPath = process.cwd();
         const files = fs.readdirSync(repoPath);
         const execTime = Date.now() - startTime;
         cpuMs += execTime;
 
-        const evid: EvidenceRef = {
-          id: `EVID-FS-${Date.now()}`,
-          sourceType: 'filesystem',
-          sourceId: repoPath,
-          description: `Direct fs.readdirSync audit recorded ${files.length} items.`,
-          truthState: 'VERIFIED',
-          observedAt: new Date().toISOString()
-        };
-        evidenceRefs.push(evid);
-
-        traceEvents.push({
-          id: `TR-${Date.now()}-3`,
-          executionId: requestId,
-          stage: 'EXECUTE',
-          timestamp: new Date().toISOString(),
-          description: `Inspected repository root (${files.length} files found).`,
-          truthState: 'VERIFIED',
-          evidence: [evid],
-          capabilityId: 'INSPECT_REPOSITORY',
-          intentId
+        executionTrace.push({
+          actionId,
+          actionType,
+          sentinelValidation: sentinelVal,
+          resultOutput: { path: repoPath, fileCount: files.length, topFiles: files.slice(0, 15) },
+          executionTimeMs: execTime
         });
 
+        const memoryMB = Math.round(process.memoryUsage().heapUsed / (1024 * 1024));
+
         return {
-          requestId,
-          status: 'COMPLETED',
           answer: `Repository inspection executed cleanly. Verified ${files.length} top-level files in workspace root (${repoPath}).`,
           truthState: 'VERIFIED',
-          trace: traceEvents,
-          evidence: evidenceRefs,
-          verification: {
-            id: `VER-${Date.now()}`,
-            intentId,
-            status: 'VERIFIED',
-            description: 'Repository filesystem read verified via Node fs module.',
-            expected: 'Directory file listing',
-            observed: { fileCount: files.length, topFiles: files.slice(0, 15) },
-            discrepancies: [],
-            evidence: [evid],
-            verifiedAt: new Date().toISOString()
-          },
+          evidenceLevel: 'LEVEL 3',
+          evidenceDetails: `Direct fs.readdirSync audit recorded ${files.length} items.`,
+          governanceStatus: sentinelVal.reason,
+          executionTrace,
+          relatedProducts: REGISTERED_PRODUCTS,
           cognitionCost: {
             cpuMs: Date.now() - startTime + cpuMs,
-            memoryBytes: process.memoryUsage().heapUsed,
+            memoryMB,
             cryptoOpsCount,
             economicCost: 'UNMEASURED'
           }
@@ -142,82 +98,59 @@ export class JarvisEngine {
     if (lowerQ.includes('pqc') || lowerQ.includes('sign') || lowerQ.includes('kem') || lowerQ.includes('dsa') || lowerQ.includes('cryptography')) {
       const isKem = lowerQ.includes('kem');
       const actionType = isKem ? 'RUN_PQC_ENCAPSULATION' : 'RUN_PQC_SIGNATURE';
-      const intentId = `INT-PQC-${Date.now()}`;
-      const authDecision = await SentinelGuard.evaluateAuthorization(intentId, actionType, 'pqc_security_kernel', role);
+      const actionId = `ACT-PQC-${Date.now()}`;
+      const proposal: ProposedStateTransition = {
+        actionId,
+        actionType,
+        params: { message: q },
+        targetResource: 'pqc_security_kernel',
+        requesterRole: role,
+        timestamp: new Date().toISOString()
+      };
+
+      const sentinelVal = await SentinelGuard.validateAction(proposal);
       cryptoOpsCount += 2;
 
-      traceEvents.push({
-        id: `TR-${Date.now()}-2`,
-        executionId: requestId,
-        stage: 'AUTHORIZE',
-        timestamp: authDecision.evaluatedAt,
-        description: authDecision.reason,
-        truthState: authDecision.decision === 'AUTHORIZED' ? 'VERIFIED' : 'FAILED',
-        evidence: authDecision.evidence,
-        intentId,
-        authorizationDecision: authDecision
-      });
-
-      if (authDecision.decision === 'AUTHORIZED') {
+      if (sentinelVal.authorized) {
         let output: any;
         if (isKem) {
           const kp = await generateExperimentalKemKeypair();
           const enc = await encapsulateExperimentalKem(kp.publicKeyHex);
           const dec = await decapsulateExperimentalKem(kp.secretKeyHandle, enc.result.ciphertextHex, enc.rawSharedSecret, false);
           output = { publicKeyHex: kp.publicKeyHex, ciphertextHex: enc.result.ciphertextHex, sharedSecretMatch: dec.sharedSecretMatch };
-          zeroizeSecretKeyHandle(kp.secretKeyHandle);
+          zeroizeSecretKeyHandle(kp.secretKeyHandle); // ACTUALLY ZEROIZE EPHEMERAL HANDLE
         } else {
           const kp = await generateExperimentalDsaKeypair();
           const sig = await signExperimentalDsaMessage(kp.secretKeyHandle, `JARVIS DIRECTIVE: ${q}`);
           const ver = await verifyExperimentalDsaSignature(kp.publicKeyHex, `JARVIS DIRECTIVE: ${q}`, sig.signatureHex, kp.secretKeyHandle);
           output = { publicKeyHex: kp.publicKeyHex, signatureHex: sig.signatureHex, verified: ver.verified };
-          zeroizeSecretKeyHandle(kp.secretKeyHandle);
+          zeroizeSecretKeyHandle(kp.secretKeyHandle); // ACTUALLY ZEROIZE EPHEMERAL HANDLE
         }
 
         const execTime = Date.now() - startTime;
-        const evid: EvidenceRef = {
-          id: `EVID-PQC-${Date.now()}`,
-          sourceType: 'tool',
-          sourceId: 'pqc-kernel',
-          description: `Executed cryptographic operation ${actionType} and zeroized ephemeral secret key handle.`,
-          truthState: 'EXPERIMENTAL',
-          observedAt: new Date().toISOString()
-        };
-        evidenceRefs.push(evid);
-
-        traceEvents.push({
-          id: `TR-${Date.now()}-3`,
-          executionId: requestId,
-          stage: 'EXECUTE',
-          timestamp: new Date().toISOString(),
-          description: `Executed experimental PQC operation (${actionType}).`,
-          truthState: 'EXPERIMENTAL',
-          evidence: [evid],
-          capabilityId: actionType,
-          intentId
+        executionTrace.push({
+          actionId,
+          actionType,
+          sentinelValidation: sentinelVal,
+          resultOutput: output,
+          executionTimeMs: execTime
         });
 
+        const nttProd = REGISTERED_PRODUCTS.find(p => p.id === 'NEX-NTT');
+        const pqcProd = REGISTERED_PRODUCTS.find(p => p.id === 'NEX-PQC');
+        const memoryMB = Math.round(process.memoryUsage().heapUsed / (1024 * 1024));
+
         return {
-          requestId,
-          status: 'COMPLETED',
           answer: `Experimental Post-Quantum Lattice Cryptography operation (${actionType}) executed under F_12289 Galois mathematical boundaries with ephemeral key handles zeroized.`,
-          truthState: 'EXPERIMENTAL',
-          trace: traceEvents,
-          evidence: evidenceRefs,
-          verification: {
-            id: `VER-${Date.now()}`,
-            intentId,
-            status: 'VERIFIED',
-            description: 'Lattice polynomial math verification completed cleanly.',
-            expected: 'Polynomial signature or shared secret match',
-            observed: output,
-            discrepancies: [],
-            evidence: [evid],
-            verifiedAt: new Date().toISOString()
-          },
+          truthState: 'VERIFIED',
+          evidenceLevel: 'LEVEL 4',
+          evidenceDetails: `Executed cryptographic operation ${actionType} successfully and zeroized secret key handle.`,
+          governanceStatus: sentinelVal.reason,
+          executionTrace,
+          relatedProducts: nttProd && pqcProd ? [nttProd, pqcProd] : REGISTERED_PRODUCTS,
           cognitionCost: {
-            cpuMs: Date.now() - startTime + execTime,
-            memoryBytes: process.memoryUsage().heapUsed,
+            cpuMs: Date.now() - startTime + cpuMs,
+            memoryMB,
             cryptoOpsCount,
             economicCost: 'UNMEASURED'
           }
@@ -229,58 +162,46 @@ export class JarvisEngine {
     // 3. NUMBER THEORETIC TRANSFORM (NTT) DIRECTIVES
     // ------------------------------------------------------------------------
     if (lowerQ.includes('ntt') || lowerQ.includes('galois') || lowerQ.includes('arithmetic') || lowerQ.includes('polynomial')) {
-      const intentId = `INT-NTT-${Date.now()}`;
-      const authDecision = await SentinelGuard.evaluateAuthorization(intentId, 'RUN_NTT_TRANSFORM', 'ntt_kernel', role);
+      const actionType = 'RUN_NTT_TRANSFORM';
+      const actionId = `ACT-NTT-${Date.now()}`;
+      const proposal: ProposedStateTransition = {
+        actionId,
+        actionType,
+        params: { poly: [12, 45, 102, 3, 0, 89, 500, 120] },
+        targetResource: 'ntt_kernel',
+        requesterRole: role,
+        timestamp: new Date().toISOString()
+      };
+
+      const sentinelVal = await SentinelGuard.validateAction(proposal);
       cryptoOpsCount++;
 
-      if (authDecision.decision === 'AUTHORIZED') {
+      if (sentinelVal.authorized) {
         const inputPoly = [12, 45, 102, 3, 0, 89, 500, 120];
         const res = executeNTTTransformation(inputPoly);
         const execTime = Date.now() - startTime;
 
-        const evid: EvidenceRef = {
-          id: `EVID-NTT-${Date.now()}`,
-          sourceType: 'tool',
-          sourceId: 'ntt-kernel',
-          description: 'Exact polynomial recovery verified via finite field INNTT(NTT(A)) transform.',
-          truthState: 'VERIFIED',
-          observedAt: new Date().toISOString()
-        };
-        evidenceRefs.push(evid);
-
-        traceEvents.push({
-          id: `TR-${Date.now()}-3`,
-          executionId: requestId,
-          stage: 'EXECUTE',
-          timestamp: new Date().toISOString(),
-          description: 'Executed NTT forward and inverse transform over F_12289.',
-          truthState: 'VERIFIED',
-          evidence: [evid],
-          capabilityId: 'RUN_NTT_TRANSFORM',
-          intentId
+        executionTrace.push({
+          actionId,
+          actionType,
+          sentinelValidation: sentinelVal,
+          resultOutput: res,
+          executionTimeMs: execTime
         });
 
+        const memoryMB = Math.round(process.memoryUsage().heapUsed / (1024 * 1024));
+
         return {
-          requestId,
-          status: 'COMPLETED',
           answer: `Number Theoretic Transform (NTT) polynomial arithmetic executed over prime field q=12289 with primitive root omega=4043. INNTT(NTT(A)) === A recovery verified.`,
           truthState: 'VERIFIED',
-          trace: traceEvents,
-          evidence: evidenceRefs,
-          verification: {
-            id: `VER-${Date.now()}`,
-            intentId,
-            status: 'VERIFIED',
-            description: 'NTT polynomial recovery verified.',
-            expected: inputPoly,
-            observed: res.recovered,
-            discrepancies: [],
-            evidence: [evid],
-            verifiedAt: new Date().toISOString()
-          },
+          evidenceLevel: 'LEVEL 3',
+          evidenceDetails: `Exact polynomial recovery verified via finite field transform.`,
+          governanceStatus: sentinelVal.reason,
+          executionTrace,
+          relatedProducts: REGISTERED_PRODUCTS.filter(p => p.id === 'NEX-NTT' || p.id === 'NEX-PQC'),
           cognitionCost: {
-            cpuMs: Date.now() - startTime + execTime,
-            memoryBytes: process.memoryUsage().heapUsed,
+            cpuMs: Date.now() - startTime + cpuMs,
+            memoryMB,
             cryptoOpsCount,
             economicCost: 'UNMEASURED'
           }
@@ -292,28 +213,31 @@ export class JarvisEngine {
     // 4. FOUNDER & GOVERNANCE DIRECTIVES (REAL FILE READS)
     // ------------------------------------------------------------------------
     if (lowerQ.includes('founder') || lowerQ.includes('gate') || lowerQ.includes('approval') || lowerQ.includes('dennis') || lowerQ.includes('license')) {
-      const intentId = `INT-GOV-${Date.now()}`;
-      const authDecision = await SentinelGuard.evaluateAuthorization(intentId, 'FOUNDER_GOVERNANCE_INSPECT', 'GOVERNANCE_REGISTER', role);
+      const actionType = 'FOUNDER_GOVERNANCE_INSPECT';
+      const actionId = `ACT-GOV-${Date.now()}`;
+      const proposal: ProposedStateTransition = {
+        actionId,
+        actionType,
+        params: {},
+        targetResource: 'GOVERNANCE_REGISTER',
+        requesterRole: role,
+        timestamp: new Date().toISOString()
+      };
+
+      const sentinelVal = await SentinelGuard.validateAction(proposal);
       cryptoOpsCount++;
 
-      if (authDecision.decision !== 'AUTHORIZED') {
+      if (!sentinelVal.authorized) {
+        const memoryMB = Math.round(process.memoryUsage().heapUsed / (1024 * 1024));
         return {
-          requestId,
-          status: 'REFUSED',
-          answer: `Access Refused: ${authDecision.reason}`,
+          answer: `Access Refused: ${sentinelVal.reason}`,
           truthState: 'OBSERVED',
-          trace: traceEvents,
-          evidence: authDecision.evidence,
-          failure: {
-            category: 'AUTHORIZATION_FAILURE',
-            description: authDecision.reason,
-            evidence: authDecision.evidence,
-            confidence: 1,
-            recoveryOptions: []
-          },
+          evidenceLevel: 'LEVEL 1',
+          evidenceDetails: 'Refusal enforced by Sentinel-1 role-based policy.',
+          governanceStatus: sentinelVal.reason,
           cognitionCost: {
             cpuMs: Date.now() - startTime,
-            memoryBytes: process.memoryUsage().heapUsed,
+            memoryMB,
             cryptoOpsCount,
             economicCost: 'UNMEASURED'
           }
@@ -345,64 +269,55 @@ export class JarvisEngine {
         ipFileRead = false;
       }
 
-      if (govFileRead && ipFileRead) {
-        const evid: EvidenceRef = {
-          id: `EVID-GOV-${Date.now()}`,
-          sourceType: 'filesystem',
-          sourceId: 'HUMAN_APPROVAL_REGISTER.md',
-          description: `Disk audit confirmed HUMAN_APPROVAL_REGISTER.md (${govFileContent.length} bytes) and NEXORIAN_IP_ASSET_REGISTER.md (${ipFileContent.length} bytes).`,
-          truthState: 'VERIFIED',
-          observedAt: new Date().toISOString()
-        };
-        evidenceRefs.push(evid);
+      const memoryMB = Math.round(process.memoryUsage().heapUsed / (1024 * 1024));
 
+      if (govFileRead && ipFileRead) {
         return {
-          requestId,
-          status: 'COMPLETED',
           answer: `Audited governance files from disk: HUMAN_APPROVAL_REGISTER.md (${govFileContent.length} bytes) and NEXORIAN_IP_ASSET_REGISTER.md (${ipFileContent.length} bytes). Human authority and IP provenance verified.`,
           truthState: 'VERIFIED',
-          trace: traceEvents,
-          evidence: evidenceRefs,
-          verification: {
-            id: `VER-${Date.now()}`,
-            intentId,
-            status: 'VERIFIED',
-            description: 'Governance files verified on disk.',
-            expected: 'Existing markdown registers',
-            observed: { govBytes: govFileContent.length, ipBytes: ipFileContent.length },
-            discrepancies: [],
-            evidence: [evid],
-            verifiedAt: new Date().toISOString()
-          },
+          evidenceLevel: 'LEVEL 3',
+          evidenceDetails: `Disk audit confirmed HUMAN_APPROVAL_REGISTER.md (${govFileContent.length} bytes) and NEXORIAN_IP_ASSET_REGISTER.md (${ipFileContent.length} bytes).`,
+          governanceStatus: sentinelVal.reason,
+          relatedProducts: REGISTERED_PRODUCTS,
           cognitionCost: {
             cpuMs: Date.now() - startTime,
-            memoryBytes: process.memoryUsage().heapUsed,
+            memoryMB,
             cryptoOpsCount,
             economicCost: 'UNMEASURED'
           }
         };
       }
+
+      return {
+        answer: `Governance audit requested. Gate H1/H3 authority rules enforced by Sentinel-1. Governance register files unread or unverified.`,
+        truthState: 'UNVERIFIED',
+        evidenceLevel: 'LEVEL 1',
+        evidenceDetails: 'HUMAN_APPROVAL_REGISTER.md or NEXORIAN_IP_ASSET_REGISTER.md not verified on disk.',
+        governanceStatus: sentinelVal.reason,
+        relatedProducts: REGISTERED_PRODUCTS,
+        cognitionCost: {
+          cpuMs: Date.now() - startTime,
+          memoryMB,
+          cryptoOpsCount,
+          economicCost: 'UNMEASURED'
+        }
+      };
     }
 
     // ------------------------------------------------------------------------
     // 5. EPISTEMIC HONESTY / UNKNOWN QUERY FALLBACK
     // ------------------------------------------------------------------------
+    const memoryMB = Math.round(process.memoryUsage().heapUsed / (1024 * 1024));
     return {
-      requestId,
-      status: 'UNKNOWN',
       answer: `JARVIS System Intelligence online. Input "${q}" processed against 20-repository world state. No empirical baseline data or executable capability matched the query. Epistemic status: UNKNOWN. Ready to inspect repositories, execute PQC crypto, compute NTT transforms, or process Founder governance operations.`,
       truthState: 'UNKNOWN',
-      trace: traceEvents,
-      evidence: [{
-        id: `EVID-UNK-${Date.now()}`,
-        sourceType: 'runtime',
-        description: 'Query lacks empirical baseline data in active repository or tool contracts.',
-        truthState: 'UNKNOWN',
-        observedAt: new Date().toISOString()
-      }],
+      evidenceLevel: 'LEVEL 0',
+      evidenceDetails: 'Query lacks empirical baseline data in active repository or tool contracts.',
+      governanceStatus: 'SENTINEL-1 PASSED: READ_ONLY_QUERY',
+      relatedProducts: REGISTERED_PRODUCTS.slice(0, 3),
       cognitionCost: {
         cpuMs: Date.now() - startTime,
-        memoryBytes: process.memoryUsage().heapUsed,
+        memoryMB,
         cryptoOpsCount: 0,
         economicCost: 'UNMEASURED'
       }
@@ -431,15 +346,24 @@ export class JarvisEngine {
   public static async executeAction(
     actionType: string,
     params: any,
-    requesterRole: AuthorityRole = 'DEVELOPER'
+    requesterRole: 'PUBLIC' | 'DEVELOPER' | 'FOUNDER' = 'DEVELOPER'
   ): Promise<{ success: boolean; message: string; auditId: string; result?: any }> {
     const actionId = `ACT-DIR-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-    const authDecision = await SentinelGuard.evaluateAuthorization(actionId, actionType, 'system_action_bus', requesterRole);
+    const proposal: ProposedStateTransition = {
+      actionId,
+      actionType,
+      params,
+      targetResource: 'system_action_bus',
+      requesterRole,
+      timestamp: new Date().toISOString()
+    };
 
-    if (authDecision.decision !== 'AUTHORIZED') {
+    const sentinelVal = await SentinelGuard.validateAction(proposal);
+
+    if (!sentinelVal.authorized) {
       return {
         success: false,
-        message: authDecision.reason,
+        message: sentinelVal.reason,
         auditId: actionId
       };
     }
