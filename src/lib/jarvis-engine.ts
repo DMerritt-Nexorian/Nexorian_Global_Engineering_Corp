@@ -405,7 +405,6 @@ export class JarvisEngine {
         auditId: actionId,
         result: res
       };
-    }
 
     if (actionType === 'RUN_PQC_SIGNATURE') {
       const kp = await generateExperimentalDsaKeypair();
