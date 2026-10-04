@@ -31,3 +31,65 @@ export interface EntitlementRecord {
   status: 'ACTIVE' | 'EXPIRED' | 'REFUNDED' | 'REVOKED';
   signature: string;
 }
+
+// ============================================================================
+// CONSOLIDATED JARVIS & SENTINEL-1 TYPES
+// ============================================================================
+
+export type EpistemicStatus =
+  | 'VERIFIED'
+  | 'OBSERVED'
+  | 'DERIVED'
+  | 'INFERRED'
+  | 'HYPOTHESIZED'
+  | 'UNKNOWN'
+  | 'CONFLICTING'
+  | 'STALE'
+  | 'FAILED'
+  | 'UNTESTED';
+
+export interface ProposedStateTransition {
+  actionId: string;
+  actionType: string;
+  params: any;
+  targetResource: string;
+  requesterRole: 'PUBLIC' | 'DEVELOPER' | 'FOUNDER';
+  timestamp: string;
+}
+
+export interface SentinelValidationResult {
+  authorized: boolean;
+  reason: string;
+  invariantsSatisfied: boolean;
+  authorizationToken?: string;
+  signatureAuditId?: string;
+  pqcAlgorithm?: string;
+}
+
+export interface JarvisQueryRequest {
+  query: string;
+  context?: 'PUBLIC' | 'FOUNDER' | 'DEVELOPER';
+  sessionToken?: string;
+}
+
+export interface JarvisQueryResponse {
+  answer: string;
+  truthState: EpistemicStatus;
+  evidenceLevel: string;
+  evidenceDetails: string;
+  governanceStatus: string;
+  executionTrace?: {
+    actionId: string;
+    actionType: string;
+    sentinelValidation: SentinelValidationResult;
+    resultOutput?: any;
+    executionTimeMs: number;
+  }[];
+  relatedProducts?: any[];
+  cognitionCost: {
+    cpuMs: number;
+    memoryMB: number;
+    cryptoOpsCount: number;
+    totalCostUSD: number;
+  };
+}
