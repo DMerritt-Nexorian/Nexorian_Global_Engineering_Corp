@@ -2,44 +2,44 @@
 
 import React, { useState } from 'react';
 import {
-  generateMlDsaKeypair,
-  signMlDsaMessage,
-  verifyMlDsaSignature,
-  generateMlKemKeypair,
-  encapsulateMlKem,
-  decapsulateMlKem,
+  generateExperimentalDsaKeypair,
+  signExperimentalDsaMessage,
+  verifyExperimentalDsaSignature,
+  generateExperimentalKemKeypair,
+  encapsulateExperimentalKem,
+  decapsulateExperimentalKem,
   PqcKeypairResult,
-  MlDsaSignatureResult,
-  MlDsaVerificationResult,
-  MlKemEncapsulationResult,
-  MlKemDecapsulationResult
+  ExperimentalDsaSignatureResult,
+  ExperimentalDsaVerificationResult,
+  ExperimentalKemEncapsulationResult,
+  ExperimentalKemDecapsulationResult
 } from '@/lib/pqc-kernel';
 
 interface EncapState {
-  result: MlKemEncapsulationResult;
+  result: ExperimentalKemEncapsulationResult;
   rawSharedSecret: string;
 }
 
 export default function PQCDemoPage() {
-  // ML-DSA State
+  // Experimental Lattice DSA State
   const [dsaKeypair, setDsaKeypair] = useState<PqcKeypairResult | null>(null);
   const [message, setMessage] = useState<string>('PROJECT NEXUS / JARVIS STATE MUTATION COMMAND #1042');
-  const [signatureResult, setSignatureResult] = useState<MlDsaSignatureResult | null>(null);
-  const [verificationResult, setVerificationResult] = useState<MlDsaVerificationResult | null>(null);
-  const [tamperTestResult, setTamperTestResult] = useState<MlDsaVerificationResult | null>(null);
+  const [signatureResult, setSignatureResult] = useState<ExperimentalDsaSignatureResult | null>(null);
+  const [verificationResult, setVerificationResult] = useState<ExperimentalDsaVerificationResult | null>(null);
+  const [tamperTestResult, setTamperTestResult] = useState<ExperimentalDsaVerificationResult | null>(null);
 
-  // ML-KEM State
+  // Experimental Lattice KEM State
   const [kemKeypair, setKemKeypair] = useState<PqcKeypairResult | null>(null);
   const [encapResult, setEncapResult] = useState<EncapState | null>(null);
-  const [decapResult, setDecapResult] = useState<MlKemDecapsulationResult | null>(null);
-  const [kemTamperResult, setKemTamperResult] = useState<MlKemDecapsulationResult | null>(null);
+  const [decapResult, setDecapResult] = useState<ExperimentalKemDecapsulationResult | null>(null);
+  const [kemTamperResult, setKemTamperResult] = useState<ExperimentalKemDecapsulationResult | null>(null);
 
   const [loading, setLoading] = useState(false);
 
-  // 1. Generate ML-DSA Keypair
+  // 1. Generate Experimental Lattice DSA Keypair
   const handleGenerateDsaKeypair = async () => {
     setLoading(true);
-    const kp = await generateMlDsaKeypair();
+    const kp = await generateExperimentalDsaKeypair();
     setDsaKeypair(kp);
     setSignatureResult(null);
     setVerificationResult(null);
@@ -51,7 +51,7 @@ export default function PQCDemoPage() {
   const handleSignMessage = async () => {
     if (!dsaKeypair) return;
     setLoading(true);
-    const sig = await signMlDsaMessage(dsaKeypair.secretKeyHandle, message);
+    const sig = await signExperimentalDsaMessage(dsaKeypair.secretKeyHandle, message);
     setSignatureResult(sig);
     setVerificationResult(null);
     setTamperTestResult(null);
@@ -62,28 +62,28 @@ export default function PQCDemoPage() {
   const handleVerifySignature = async () => {
     if (!dsaKeypair || !signatureResult) return;
     setLoading(true);
-    const res = await verifyMlDsaSignature(dsaKeypair.publicKeyHex, message, signatureResult.signatureHex, dsaKeypair.secretKeyHandle);
+    const res = await verifyExperimentalDsaSignature(dsaKeypair.publicKeyHex, message, signatureResult.signatureHex, dsaKeypair.secretKeyHandle);
     setVerificationResult(res);
 
     // Also run tamper check on altered message
-    const tamperRes = await verifyMlDsaSignature(dsaKeypair.publicKeyHex, message + ' [TAMPERED_PAYLOAD]', signatureResult.signatureHex, dsaKeypair.secretKeyHandle);
+    const tamperRes = await verifyExperimentalDsaSignature(dsaKeypair.publicKeyHex, message + ' [TAMPERED_PAYLOAD]', signatureResult.signatureHex, dsaKeypair.secretKeyHandle);
     setTamperTestResult(tamperRes);
     setLoading(false);
   };
 
-  // 4. ML-KEM Keygen & Encapsulate & Decapsulate
+  // 4. Experimental KEM Keygen & Encapsulate & Decapsulate
   const handleRunKemSuite = async () => {
     setLoading(true);
-    const kp = await generateMlKemKeypair();
+    const kp = await generateExperimentalKemKeypair();
     setKemKeypair(kp);
 
-    const encap = await encapsulateMlKem(kp.publicKeyHex);
+    const encap = await encapsulateExperimentalKem(kp.publicKeyHex);
     setEncapResult(encap);
 
-    const decap = await decapsulateMlKem(kp.secretKeyHandle, encap.result.ciphertextHex, encap.rawSharedSecret, false);
+    const decap = await decapsulateExperimentalKem(kp.secretKeyHandle, encap.result.ciphertextHex, encap.rawSharedSecret, false);
     setDecapResult(decap);
 
-    const decapTamper = await decapsulateMlKem(kp.secretKeyHandle, encap.result.ciphertextHex, encap.rawSharedSecret, true);
+    const decapTamper = await decapsulateExperimentalKem(kp.secretKeyHandle, encap.result.ciphertextHex, encap.rawSharedSecret, true);
     setKemTamperResult(decapTamper);
 
     setLoading(false);
@@ -114,19 +114,19 @@ export default function PQCDemoPage() {
     <div style={{ padding: '2rem', backgroundColor: '#090d16', color: '#f8fafc', minHeight: '100vh', fontFamily: 'monospace' }}>
       <header style={{ borderBottom: '1px solid #1e293b', paddingBottom: '1rem', marginBottom: '2rem' }}>
         <h1 style={{ color: '#38bdf8', fontSize: '1.75rem', margin: 0 }}>LIVE DEMONSTRATION: CORE_SEC_PQC</h1>
-        <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Post-Quantum Cryptography (FIPS 203 ML-KEM & FIPS 204 ML-DSA Signature Engine)</p>
+        <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Experimental Lattice Polynomial Cryptography Kernel (F_12289 Galois Field)</p>
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-        {/* Left Panel: ML-DSA Operations */}
+        {/* Left Panel: Experimental Lattice DSA Operations */}
         <div style={{ backgroundColor: '#0f172a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
-          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: 0 }}>1. ML-DSA Digital Signature Verification</h2>
+          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: 0 }}>1. Experimental Lattice Signature Verification</h2>
           <button
             onClick={handleGenerateDsaKeypair}
             disabled={loading}
             style={{ backgroundColor: '#0284c7', color: '#fff', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
           >
-            GENERATE ML-DSA KEYPAIR
+            GENERATE EXPERIMENTAL DSA KEYPAIR
           </button>
 
           {dsaKeypair && (
@@ -149,7 +149,7 @@ export default function PQCDemoPage() {
             onClick={handleSignMessage}
             style={{ backgroundColor: dsaKeypair ? '#0284c7' : '#334155', color: '#fff', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: dsaKeypair ? 'pointer' : 'not-allowed', fontWeight: 'bold' }}
           >
-            GENERATE ML-DSA SIGNATURE
+            GENERATE EXPERIMENTAL SIGNATURE
           </button>
 
           {signatureResult && (
@@ -183,11 +183,11 @@ export default function PQCDemoPage() {
           )}
         </div>
 
-        {/* Right Panel: ML-KEM Operations */}
+        {/* Right Panel: Experimental KEM Operations */}
         <div style={{ backgroundColor: '#0f172a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
-          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: 0 }}>3. ML-KEM Key Encapsulation Suite</h2>
+          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: 0 }}>3. Experimental KEM Encapsulation Suite</h2>
           <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
-            Tests FIPS 203 encapsulation, shared secret derivation, and decapsulation integrity.
+            Tests polynomial encapsulation, shared secret derivation, and decapsulation integrity.
           </p>
 
           <button
@@ -195,12 +195,12 @@ export default function PQCDemoPage() {
             disabled={loading}
             style={{ backgroundColor: '#8b5cf6', color: '#fff', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
           >
-            EXECUTE ML-KEM ENCAPSULATION & DECAPSULATION
+            EXECUTE EXPERIMENTAL KEM ENCAPSULATION & DECAPSULATION
           </button>
 
           {kemKeypair && encapResult && decapResult && (
             <div style={{ marginTop: '1.5rem', backgroundColor: '#1e293b', padding: '1rem', borderRadius: '4px', fontSize: '0.8rem' }}>
-              <p style={{ color: '#a78bfa', fontWeight: 'bold' }}>✓ ML-KEM EXECUTED</p>
+              <p style={{ color: '#a78bfa', fontWeight: 'bold' }}>✓ EXPERIMENTAL KEM EXECUTED</p>
               <div><strong>Ciphertext:</strong> {encapResult.result.ciphertextHex.slice(0, 32)}...</div>
               <div style={kemValidStyle}>
                 <strong>Shared Secret Match:</strong> {kemValidText}

@@ -31,3 +31,24 @@ export interface EntitlementRecord {
   status: 'ACTIVE' | 'EXPIRED' | 'REFUNDED' | 'REVOKED';
   signature: string;
 }
+
+export interface ProposedStateTransition {
+  actionId: string;
+  actionType: string;
+  params: any;
+  targetResource: string;
+  requesterRole: 'PUBLIC' | 'DEVELOPER' | 'FOUNDER' | 'SYSTEM';
+  timestamp: string;
+}
+
+export interface SentinelValidationResult {
+  authorized: boolean;
+  reason: string;
+  invariantsSatisfied: boolean;
+  authorizationToken?: string;
+  signatureAuditId?: string;
+  pqcAlgorithm?: string;
+}
+
+// Re-export JARVIS Core Contracts from jarvis-contracts.ts
+export * from './jarvis-contracts';
