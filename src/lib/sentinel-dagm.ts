@@ -1,5 +1,5 @@
 import { ProposedStateTransition, SentinelValidationResult } from './types';
-import { generateMlDsaKeypair, signMlDsaMessage } from './pqc-kernel';
+import { generateExperimentalDsaKeypair, signExperimentalDsaMessage } from './pqc-kernel';
 
 /**
  * Sentinel-1 Deterministic Autonomous Control Layer
@@ -10,11 +10,11 @@ export class SentinelGuard {
   private static sentinelPubKeyHex: string | null = null;
 
   /**
-   * Initialize Sentinel-1 ML-DSA-87 Cryptographic Signing Identity.
+   * Initialize Sentinel-1 Cryptographic Signing Identity.
    */
   public static async initializeIdentity(): Promise<void> {
     if (!this.sentinelDsaHandle) {
-      const kp = await generateMlDsaKeypair('Category 5 / Sentinel-1 Root');
+      const kp = await generateExperimentalDsaKeypair('Category 5 / Sentinel-1 Root');
       this.sentinelDsaHandle = kp.secretKeyHandle;
       this.sentinelPubKeyHex = kp.publicKeyHex;
     }
@@ -45,9 +45,9 @@ export class SentinelGuard {
       };
     }
 
-    // 3. Invariant Satisfied -> Generate PQC Authorization Token (ML-DSA-87)
+    // 3. Invariant Satisfied -> Generate PQC Authorization Token
     const payload = `SENTINEL-AUTH:${proposal.actionId}:${proposal.actionType}:${proposal.requesterRole}:${proposal.timestamp}`;
-    const sigResult = await signMlDsaMessage(this.sentinelDsaHandle!, payload);
+    const sigResult = await signExperimentalDsaMessage(this.sentinelDsaHandle!, payload);
 
     return {
       authorized: true,
@@ -55,7 +55,7 @@ export class SentinelGuard {
       invariantsSatisfied: true,
       authorizationToken: sigResult.signatureHex,
       signatureAuditId: sigResult.auditId,
-      pqcAlgorithm: 'ML-DSA-87'
+      pqcAlgorithm: 'EXPERIMENTAL-LATTICE-DSA'
     };
   }
 

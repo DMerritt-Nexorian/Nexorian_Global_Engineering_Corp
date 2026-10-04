@@ -33,11 +33,12 @@ export interface EntitlementRecord {
 }
 
 // ============================================================================
-// CONSOLIDATED JARVIS & SENTINEL-1 TYPES
+// JARVIS & SENTINEL-1 HONEST TYPES
 // ============================================================================
 
 export type EpistemicStatus =
   | 'VERIFIED'
+  | 'UNVERIFIED'
   | 'OBSERVED'
   | 'DERIVED'
   | 'INFERRED'
@@ -46,7 +47,8 @@ export type EpistemicStatus =
   | 'CONFLICTING'
   | 'STALE'
   | 'FAILED'
-  | 'UNTESTED';
+  | 'UNTESTED'
+  | 'UNIMPLEMENTED';
 
 export interface ProposedStateTransition {
   actionId: string;
@@ -88,8 +90,8 @@ export interface JarvisQueryResponse {
   relatedProducts?: any[];
   cognitionCost: {
     cpuMs: number;
-    memoryMB: number;
+    memoryMB: number | 'UNMEASURED';
     cryptoOpsCount: number;
-    totalCostUSD: number;
+    economicCost: 'UNMEASURED';
   };
 }

@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         evidenceLevel: 'LEVEL 0',
         evidenceDetails: err.message,
         governanceStatus: 'EXECUTION_EXCEPTION',
-        cognitionCost: { cpuMs: 0, memoryMB: 0, cryptoOpsCount: 0, totalCostUSD: 0 }
+        cognitionCost: { cpuMs: 0, memoryMB: 0, cryptoOpsCount: 0, economicCost: 'UNMEASURED' }
       },
       { status: 500 }
     );

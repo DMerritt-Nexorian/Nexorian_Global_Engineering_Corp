@@ -1,6 +1,6 @@
-const assert = require('assert');
-const { JarvisEngine } = require('../dist/jarvis-engine');
-const { SentinelGuard } = require('../dist/sentinel-dagm');
+import assert from 'assert';
+import { JarvisEngine } from '../src/lib/jarvis-engine';
+import { SentinelGuard } from '../src/lib/sentinel-dagm';
 
 async function runCoreTests() {
   console.log('----------------------------------------------------');
@@ -14,13 +14,13 @@ async function runCoreTests() {
     actionType: 'INSPECT_REPOSITORY',
     params: {},
     targetResource: 'repo_root',
-    requesterRole: 'PUBLIC',
+    requesterRole: 'PUBLIC' as const,
     timestamp: new Date().toISOString()
   };
   const valResult = await SentinelGuard.validateAction(validProposal);
   assert.strictEqual(valResult.authorized, true);
   assert.strictEqual(valResult.invariantsSatisfied, true);
-  assert.ok(valResult.authorizationToken.startsWith('SIG-ML-DSA-87-'));
+  assert.ok(valResult.authorizationToken?.startsWith('SIG-EXP-DSA-'));
 
   // Test Role-based Authorization Denial
   const unauthorizedProposal = {
@@ -28,7 +28,7 @@ async function runCoreTests() {
     actionType: 'FOUNDER_GOVERNANCE_INSPECT',
     params: {},
     targetResource: 'GOVERNANCE_REGISTER',
-    requesterRole: 'PUBLIC',
+    requesterRole: 'PUBLIC' as const,
     timestamp: new Date().toISOString()
   };
   const unauthVal = await SentinelGuard.validateAction(unauthorizedProposal);
@@ -41,7 +41,7 @@ async function runCoreTests() {
     actionType: 'DELETE_CRITICAL_SYSTEM',
     params: {},
     targetResource: 'system_root',
-    requesterRole: 'FOUNDER',
+    requesterRole: 'FOUNDER' as const,
     timestamp: new Date().toISOString()
   };
   const wipeVal = await SentinelGuard.validateAction(wipeProposal);
@@ -52,11 +52,11 @@ async function runCoreTests() {
   // 2. Test Real Source File Reading & Path Traversal Guard
   const readRes = JarvisEngine.readSourceFile('package.json');
   assert.strictEqual(readRes.success, true);
-  assert.ok(readRes.content.includes('nexorian-global-engineering-portal'));
+  assert.ok(readRes.content?.includes('nexorian-global-engineering-portal'));
 
   const pathTraversalRes = JarvisEngine.readSourceFile('../../../../etc/passwd');
   assert.strictEqual(pathTraversalRes.success, false);
-  assert.ok(pathTraversalRes.error.includes('Path traversal outside repository root'));
+  assert.ok(pathTraversalRes.error?.includes('Path traversal outside repository root'));
   console.log('✓ Real Source File Operations & Path Traversal Security Test Passed.');
 
   // 3. Test JARVIS Intelligence Query Processing & Execution Trace
@@ -66,14 +66,14 @@ async function runCoreTests() {
   });
   assert.strictEqual(repoQueryRes.truthState, 'VERIFIED');
   assert.ok(repoQueryRes.answer.includes('Repository inspection executed cleanly'));
-  assert.ok(repoQueryRes.executionTrace.length > 0);
+  assert.ok(repoQueryRes.executionTrace!.length > 0);
 
   const pqcQueryRes = await JarvisEngine.processQuery({
-    query: 'Execute PQC ML-DSA signature and ML-KEM encapsulation',
+    query: 'Execute PQC signature and KEM encapsulation',
     context: 'DEVELOPER'
   });
   assert.strictEqual(pqcQueryRes.truthState, 'VERIFIED');
-  assert.ok(pqcQueryRes.answer.includes('Post-Quantum Cryptography'));
+  assert.ok(pqcQueryRes.answer.includes('Experimental Post-Quantum Lattice Cryptography'));
 
   const nttQueryRes = await JarvisEngine.processQuery({
     query: 'Execute NTT polynomial arithmetic over q=12289',
@@ -89,7 +89,18 @@ async function runCoreTests() {
   });
   assert.strictEqual(unknownQueryRes.truthState, 'UNKNOWN');
   assert.ok(unknownQueryRes.answer.includes('Epistemic status: UNKNOWN'));
+  assert.strictEqual(unknownQueryRes.cognitionCost.economicCost, 'UNMEASURED');
   console.log('✓ JARVIS Intelligence Reasoning, Traces & Epistemic Honesty Test Passed.');
+
+  // 4. Test Real Capability Execution via executeAction
+  const execRepoRes = await JarvisEngine.executeAction('INSPECT_REPOSITORY', {}, 'DEVELOPER');
+  assert.strictEqual(execRepoRes.success, true);
+  assert.ok(execRepoRes.result.fileCount > 0);
+
+  const execUnboundRes = await JarvisEngine.executeAction('UNRECOGNIZED_ACTION', {}, 'DEVELOPER');
+  assert.strictEqual(execUnboundRes.success, false);
+  assert.ok(execUnboundRes.message.includes('UNIMPLEMENTED'));
+  console.log('✓ Real Executable Action Binding & Honest Unimplemented Status Test Passed.');
 
   console.log('✓ ALL CORE ARCHITECTURAL TESTS PASSED SUCCESSFULLY.');
 }

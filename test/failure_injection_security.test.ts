@@ -1,6 +1,11 @@
-const assert = require('assert');
-const { SentinelGuard } = require('../dist/sentinel-dagm');
-const { JarvisEngine } = require('../dist/jarvis-engine');
+import assert from 'assert';
+import { SentinelGuard } from '../src/lib/sentinel-dagm';
+import { JarvisEngine } from '../src/lib/jarvis-engine';
+import {
+  generateExperimentalDsaKeypair,
+  verifyExperimentalDsaSignature,
+  zeroizeSecretKeyHandle
+} from '../src/lib/pqc-kernel';
 
 async function runFailureInjectionTests() {
   console.log('----------------------------------------------------');
@@ -13,7 +18,7 @@ async function runFailureInjectionTests() {
   console.log('Injecting Path Traversal Attack...');
   const pathTraversalRes = JarvisEngine.readSourceFile('../../../../etc/passwd');
   assert.strictEqual(pathTraversalRes.success, false);
-  assert.ok(pathTraversalRes.error.includes('Path traversal outside repository root'));
+  assert.ok(pathTraversalRes.error?.includes('Path traversal outside repository root'));
   console.log('✓ Path Traversal Attack safely blocked.');
 
   // 2. Security Test: Unauthorized Role Escalation
@@ -46,16 +51,16 @@ async function runFailureInjectionTests() {
 
   // 4. Failure Test: Malformed/Tampered PQC Signature Verification
   console.log('Injecting Tampered PQC Signature Verification...');
-  const { generateMlDsaKeypair, verifyMlDsaSignature } = require('../dist/pqc-kernel');
-  const kp = await generateMlDsaKeypair();
-  const tamperedVerify = await verifyMlDsaSignature(
+  const kp = await generateExperimentalDsaKeypair();
+  const tamperedVerify = await verifyExperimentalDsaSignature(
     kp.publicKeyHex,
     'LEGITIMATE MESSAGE',
-    'SIG-ML-DSA-87-CORRUPTED_SIGNATURE_HEX_12345',
+    'SIG-EXP-DSA-CORRUPTED_SIGNATURE_HEX_12345',
     kp.secretKeyHandle
   );
   assert.strictEqual(tamperedVerify.verified, false);
   assert.strictEqual(tamperedVerify.tamperDetected, true);
+  zeroizeSecretKeyHandle(kp.secretKeyHandle);
   console.log('✓ Cryptographic tamper attempt safely detected and rejected.');
 
   // 5. Failure Test: Epistemic Refusal on Ambiguous Prompt
