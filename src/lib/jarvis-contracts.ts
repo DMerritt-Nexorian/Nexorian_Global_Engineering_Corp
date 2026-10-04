@@ -30,40 +30,6 @@
  * authorization.
  */
 
-export interface ProductCatalogItem {
-  id: string;
-  name: string;
-  repo: string;
-  category: string;
-  proposedStatus: string;
-  targetCustomer: string;
-  licenseType: string;
-  platforms: string[];
-  description: string;
-  priceUSD: number;
-}
-
-export interface HumanApprovalEntry {
-  approvalId: string;
-  actionType: string;
-  target: string;
-  environment: string;
-  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  approver?: string;
-  scope: string;
-}
-
-export interface EntitlementRecord {
-  licenseId: string;
-  customerId: string;
-  productId: string;
-  purchaseTimestamp: string;
-  licenseType: string;
-  status: 'ACTIVE' | 'EXPIRED' | 'REFUNDED' | 'REVOKED';
-  signature: string;
-}
-
 export const JARVIS_CONTRACT_VERSION = "1.0.0";
 
 /* -------------------------------------------------------------------------- */
@@ -227,8 +193,6 @@ export interface Objective {
   readonly successCriteria: readonly SuccessCriterion[];
 
   readonly createdAt: string;
-
-  readonly constraints?: readonly Constraint[];
 }
 
 export interface Constraint {
@@ -335,50 +299,40 @@ export interface CapabilityDescriptor {
  * execution authority.
  */
 export interface ExecutionIntent {
-  readonly id?: string;
+  readonly id: string;
 
-  readonly createdAt?: string;
+  readonly createdAt: string;
 
-  readonly objectiveId?: string;
+  readonly objectiveId: string;
 
-  readonly description?: string;
+  readonly description: string;
 
-  readonly capabilityId?: string;
+  readonly capabilityId: string;
 
-  readonly capabilityVersion?: string;
+  readonly capabilityVersion: string;
 
-  readonly input?: unknown;
+  readonly input: unknown;
 
-  readonly preconditions?: readonly Precondition[];
+  readonly preconditions: readonly Precondition[];
 
-  readonly expectedEffects?: readonly ExpectedEffect[];
+  readonly expectedEffects: readonly ExpectedEffect[];
 
-  readonly constraints?: readonly Constraint[];
+  readonly constraints: readonly Constraint[];
 
-  readonly authorization?: {
-    readonly role: AuthorityRole;
-    readonly authorizationRequired: boolean;
-  } | AuthorizationRequirement;
+  readonly authorization: AuthorizationRequirement;
 
-  readonly resourceBudget?: ResourceBudget;
+  readonly resourceBudget: ResourceBudget;
 
-  readonly verificationPlan?: readonly VerificationRequirement[];
-
-  readonly verificationRequirements?: readonly VerificationRequirement[];
+  readonly verificationPlan: readonly VerificationRequirement[];
 
   readonly rollbackPlan?: RollbackPlan;
 
+  /**
+   * Intent provenance.
+   *
+   * This identifies which reasoning/plan generated the executable intent.
+   */
   readonly generatedFrom?: string;
-
-  readonly objective?: Objective;
-
-  readonly scope?: readonly string[];
-
-  readonly reasoningConclusion?: {
-    readonly truthState: TruthState;
-    readonly confidence: number;
-    readonly evidenceRefs: readonly string[];
-  };
 }
 
 export interface Precondition {

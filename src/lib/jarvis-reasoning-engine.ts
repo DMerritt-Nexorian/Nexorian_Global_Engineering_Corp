@@ -80,7 +80,6 @@ export interface ReasoningPremise {
   readonly confidence: number;
   readonly evidence: readonly EvidenceRef[];
   readonly sourceFactIds: readonly string[];
-  readonly evidenceRefs?: readonly string[];
 }
 
 export interface ReasoningAssumption {
@@ -99,7 +98,6 @@ export interface ReasoningStep {
   readonly truthState: TruthState;
   readonly confidence: number;
   readonly evidence: readonly EvidenceRef[];
-  readonly evidenceRefs?: readonly string[];
 }
 
 export interface ReasoningAlternative {
@@ -123,7 +121,6 @@ export interface ReasoningDecision {
 export interface ReasoningResult {
   readonly id: string;
   readonly objectiveId?: string;
-  readonly objective?: Objective;
   readonly mode: ReasoningMode;
   readonly status: ReasoningStatus;
 
@@ -134,12 +131,7 @@ export interface ReasoningResult {
 
   readonly decision?: ReasoningDecision;
 
-  readonly conclusion: {
-    readonly text: string;
-    readonly truthState: TruthState;
-    readonly confidence: number;
-    readonly evidenceRefs?: readonly string[];
-  };
+  readonly conclusion: string;
 
   readonly truthState: TruthState;
   readonly confidence: number;
@@ -329,7 +321,6 @@ export class JarvisReasoningEngine {
           assessment.confidence,
         evidence:
           assessment.supportingEvidence,
-        evidenceRefs: assessment.supportingEvidence.map(e => e.id),
         sourceFactIds:
           assessment.contradictingFactIds,
       });
@@ -386,7 +377,6 @@ export class JarvisReasoningEngine {
               : 0,
           evidence:
             fact.evidence,
-          evidenceRefs: fact.evidence.map(e => e.id),
           sourceFactIds: [fact.id],
         });
       }
@@ -567,7 +557,7 @@ export class JarvisReasoningEngine {
       request.mode === "PLANNING" ||
       request.mode === "DECISION";
 
-    const conclusionText =
+    const conclusion =
       this.buildConclusion(
         request,
         status,
@@ -576,13 +566,10 @@ export class JarvisReasoningEngine {
         uncertainties,
       );
 
-    const collectedEvid = collectEvidence(premises);
-
     return {
       id: request.id,
       objectiveId:
         request.objective?.id,
-      objective: request.objective,
 
       mode: request.mode,
       status,
@@ -594,17 +581,13 @@ export class JarvisReasoningEngine {
       alternatives:
         request.alternatives ?? [],
 
-      conclusion: {
-        text: conclusionText,
-        truthState,
-        confidence,
-        evidenceRefs: collectedEvid.map(e => e.id)
-      },
+      conclusion,
 
       truthState,
       confidence,
 
-      evidence: collectedEvid,
+      evidence:
+        collectEvidence(premises),
 
       blockers:
         uniqueStrings(blockers),
