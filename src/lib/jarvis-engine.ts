@@ -24,6 +24,8 @@ import { REGISTERED_PRODUCTS } from './products-registry';
  * Sentinel-1 DAGM validation, epistemic honesty, and cognition cost accounting.
  */
 export class JarvisEngine {
+  private static worldModel = new JarvisWorldModel();
+  private static evidenceEngine = new JarvisEvidenceEngine(this.worldModel);
 
   /**
    * Process incoming user query or execution directive.
