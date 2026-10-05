@@ -190,7 +190,7 @@ export class StateTransitionEngine {
       };
     }
 
-    const projected = await this.project(world, transition);
+    const projected = this.project(world, transition);
     conflicts.push(...this.detectConflicts(projected));
 
     if (conflicts.length > 0) {
@@ -210,7 +210,7 @@ export class StateTransitionEngine {
       };
     }
 
-    const afterFingerprint = projected.fingerprint;
+    const afterFingerprint = await sha256(JSON.stringify(projected));
 
     return {
       accepted: true,
@@ -413,7 +413,7 @@ export class StateTransitionEngine {
     }
   }
 
-  private async project(world: WorldState, transition: StateTransition): Promise<WorldState> {
+  private project(world: WorldState, transition: StateTransition): WorldState {
     let nodes = world.nodes.map(clone);
     let edges = world.edges.map(clone);
     let claims = world.claims.map(clone);
@@ -446,18 +446,12 @@ export class StateTransitionEngine {
         break;
     }
 
-    const projectedWithoutFingerprint = {
+    return {
       nodes,
       edges,
       claims,
       asOf: world.asOf,
-    };
-
-    const fp = await sha256(JSON.stringify(projectedWithoutFingerprint));
-
-    return {
-      ...projectedWithoutFingerprint,
-      fingerprint: fp,
+      fingerprint: "",
     };
   }
 
