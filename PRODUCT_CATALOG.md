@@ -5,11 +5,20 @@
 
 ---
 
-## Portfolio Commercial Candidates
+## Corporate Control Plane (Platform Surface)
+
+> **Note:** `Nexorian_Global_Engineering_Corp` serves exclusively as the central Corporate Control Plane, Engineering Intelligence Platform, VDR, and Operating Surface. It is **NOT** a commercial product for sale and is excluded from commercial portfolio leasing.
+
+| Platform Component | Repository | Role | Status | License | Supported Platforms |
+|-------------------|------------|------|--------|---------|---------------------|
+| Nexorian Corporate Control Surface | `Nexorian_Global_Engineering_Corp` | Central Control Plane & VDR Surface | `STATUS A — TECHNICALLY READY FOR HUMAN REVIEW` | Corporate Proprietary | Web (Node.js/Next.js) |
+
+---
+
+## Portfolio Commercial Products Catalog (10 Products)
 
 | Product ID | Product Name | Repository | Category / Type | Proposed Commercial Status | Target Customer | License Type | Supported Platforms |
 |------------|--------------|------------|-----------------|----------------------------|-----------------|--------------|---------------------|
-| `NEX-PORTAL` | Nexorian Executive Web Portal & VDR | `Nexorian_Global_Engineering_Corp` | Web Platform / Data Room | `STATUS A — TECHNICALLY READY FOR HUMAN REVIEW` | Enterprise / Investors | Proprietary Commercial | Web (Node.js/Next.js) |
 | `NEX-VITA` | Vita Crypto Wealth Engine | `Vita-Crypto-Wealth` | Web3 / DeFi Asset Manager | `STATUS B — CONDITIONAL RELEASE` | Crypto Wealth Managers | Commercial Proprietary | EVM / Web3 |
 | `NEX-NTT` | Core Sec NTT Accelerator | `Core_Sec_NTT` | Cryptographic Accelerator | `STATUS C — EXTERNAL VALIDATION REQUIRED` | Chip Designers / Security | Dual / Commercial IP | Linux / RTL / WASM |
 | `NEX-PQC` | Core Sec Post-Quantum Cryptography | `CORE_SEC_PQC` | Security / PQC Library | `STATUS C — EXTERNAL VALIDATION REQUIRED` | Defense / Financial Enterprise | Proprietary Commercial | Linux / Windows / WASM |
