@@ -32,75 +32,66 @@ export interface EntitlementRecord {
   signature: string;
 }
 
-export type TruthState = 'EXISTING' | 'VERIFIED' | 'TARGET' | 'CONTRADICTED' | 'UNVERIFIED';
+// ============================================================================
+// JARVIS & SENTINEL-1 HONEST TYPES
+// ============================================================================
 
-export interface Node {
-  id: string;
-  type: string;
-  label: string;
-  properties?: Record<string, any>;
+export type EpistemicStatus =
+  | 'VERIFIED'
+  | 'UNVERIFIED'
+  | 'OBSERVED'
+  | 'DERIVED'
+  | 'INFERRED'
+  | 'HYPOTHESIZED'
+  | 'UNKNOWN'
+  | 'CONFLICTING'
+  | 'STALE'
+  | 'FAILED'
+  | 'UNTESTED'
+  | 'UNIMPLEMENTED';
+
+export interface ProposedStateTransition {
+  actionId: string;
+  actionType: string;
+  params: any;
+  targetResource: string;
+  requesterRole: 'PUBLIC' | 'DEVELOPER' | 'FOUNDER';
+  timestamp: string;
 }
 
-export interface Edge {
-  id: string;
-  from: string;
-  to: string;
-  relationship: string;
-  properties?: Record<string, any>;
+export interface SentinelValidationResult {
+  authorized: boolean;
+  reason: string;
+  invariantsSatisfied: boolean;
+  authorizationToken?: string;
+  signatureAuditId?: string;
+  pqcAlgorithm?: string;
 }
 
-export interface Claim {
-  id: string;
-  subject: string;
-  predicate: string;
-  object: string;
-  truth: TruthState;
-  evidenceLevel?: string;
+export interface JarvisQueryRequest {
+  query: string;
+  context?: 'PUBLIC' | 'FOUNDER' | 'DEVELOPER';
+  sessionToken?: string;
 }
 
-export interface WorldState {
-  fingerprint: string;
-  nodes: Node[];
-  edges: Edge[];
-  claims: Claim[];
-  asOf: string;
+export interface JarvisQueryResponse {
+  answer: string;
+  truthState: EpistemicStatus;
+  evidenceLevel: string;
+  evidenceDetails: string;
+  governanceStatus: string;
+  executionTrace?: {
+    actionId: string;
+    actionType: string;
+    sentinelValidation: SentinelValidationResult;
+    resultOutput?: any;
+    executionTimeMs: number;
+  }[];
+  relatedProducts?: any[];
+  cognitionCost: {
+    cpuMs: number;
+    memoryMB: number | 'UNMEASURED';
+    cryptoOpsCount: number;
+    economicCost: 'UNMEASURED';
+  };
 }
-
-export const PRODUCTS: ProductCatalogItem[] = [
-  {
-    id: 'NEX-PORTAL',
-    name: 'Nexorian Executive Web Portal & VDR',
-    repo: 'Nexorian_Global_Engineering_Corp',
-    category: 'Web Platform / Data Room',
-    proposedStatus: 'STATUS A — TECHNICALLY READY FOR HUMAN REVIEW',
-    targetCustomer: 'Enterprise / Investors',
-    licenseType: 'Proprietary Commercial',
-    platforms: ['Node.js', 'Next.js', 'WASM'],
-    description: 'Production Web Portal, 3D WebGL Jarvis entity, and air-gapped Virtual Data Room.',
-    priceUSD: 4999
-  },
-  {
-    id: 'NEX-PQC',
-    name: 'Core Sec Post-Quantum Cryptography',
-    repo: 'CORE_SEC_PQC',
-    category: 'Security / Cryptography',
-    proposedStatus: 'STATUS C — EXTERNAL VALIDATION REQUIRED',
-    targetCustomer: 'Defense / Financial Enterprise',
-    licenseType: 'Proprietary Commercial',
-    platforms: ['Linux', 'Windows', 'WASM'],
-    description: 'Post-Quantum Cryptography library implementing FIPS 203/204 algorithms.',
-    priceUSD: 12500
-  },
-  {
-    id: 'NEX-NTT',
-    name: 'Core Sec NTT Accelerator',
-    repo: 'Core_Sec_NTT',
-    category: 'Cryptographic Hardware/SW',
-    proposedStatus: 'STATUS C — EXTERNAL VALIDATION REQUIRED',
-    targetCustomer: 'Chip Designers / Security OEMs',
-    licenseType: 'Commercial IP Licensing',
-    platforms: ['Verilog', 'RTL', 'C++'],
-    description: 'High-performance Number Theoretic Transform hardware acceleration core.',
-    priceUSD: 25000
-  }
-];

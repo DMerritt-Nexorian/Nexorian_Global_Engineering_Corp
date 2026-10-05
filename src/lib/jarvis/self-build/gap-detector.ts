@@ -1,0 +1,2 @@
+import {Capability,CapabilityGap,Goal} from "../core/types";
+export function detectGap(goal:Goal,capabilities:Capability[]):CapabilityGap{const text=goal.description.toLowerCase();const missing=capabilities.filter(c=>!c.enabled).map(c=>c.name).filter(n=>text.includes(n.toLowerCase())===false);return {goalId:goal.id,missing:missing.slice(0,8),rationale:"Candidate gaps require explicit capability matching and verification; no capability is assumed to exist."};}
