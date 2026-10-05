@@ -70,7 +70,7 @@ async function runFailureInjectionTests() {
     context: 'PUBLIC'
   });
   assert.strictEqual(ambiguousRes.truthState, 'UNKNOWN');
-  assert.ok(String(ambiguousRes.answer).includes('Epistemic status: UNKNOWN'));
+  assert.ok(ambiguousRes.answer.includes('Epistemic status: UNKNOWN'));
   console.log('✓ Epistemic honesty maintained for unverifiable requests.');
 
   console.log('✓ ALL FAILURE-INJECTION & SECURITY TESTS PASSED SUCCESSFULLY.');
