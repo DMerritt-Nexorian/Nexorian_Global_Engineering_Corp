@@ -394,7 +394,6 @@ export class JarvisEngine {
         auditId: actionId,
         result: res.content ? { sizeBytes: res.content.length } : null
       };
-    }
 
     if (actionType === 'RUN_NTT_TRANSFORM') {
       const inputPoly = params?.poly || [12, 45, 102, 3, 0, 89, 500, 120];
