@@ -15,6 +15,11 @@ import {
   MlKemDecapsulationResult
 } from '@/lib/pqc-kernel';
 
+interface EncapState {
+  result: MlKemEncapsulationResult;
+  rawSharedSecret: string;
+}
+
 export default function PQCDemoPage() {
   // ML-DSA State
   const [dsaKeypair, setDsaKeypair] = useState<PqcKeypairResult | null>(null);
@@ -25,7 +30,7 @@ export default function PQCDemoPage() {
 
   // ML-KEM State
   const [kemKeypair, setKemKeypair] = useState<PqcKeypairResult | null>(null);
-  const [encapResult, setEncapResult] = useState<{ result: MlKemEncapsulationResult; rawSharedSecret: string } | null>(null);
+  const [encapResult, setEncapResult] = useState<EncapState | null>(null);
   const [decapResult, setDecapResult] = useState<MlKemDecapsulationResult | null>(null);
   const [kemTamperResult, setKemTamperResult] = useState<MlKemDecapsulationResult | null>(null);
 
@@ -82,50 +87,28 @@ export default function PQCDemoPage() {
     setKemTamperResult(decapTamper);
 
     setLoading(false);
-
-export default function PQCDemoPage() {
-  const [keyPair, setKeyPair] = useState<{ publicKey: string; privateKey: string } | null>(null);
-  const [signature, setSignature] = useState<string | null>(null);
-  const [verificationResult, setVerificationResult] = useState<boolean | null>(null);
-  const [message, setMessage] = useState<string>('PROJECT NEXUS / JARVIS STATE MUTATION COMMAND #1042');
-
-  // Pure Web Crypto helper for string hashing
-  const sha256Hex = async (str: string): Promise<string> => {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(str);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
   };
 
-  const generateKeys = async () => {
-    // Client-side ML-DSA/KEM Cryptographic Demonstration simulation using Web Crypto API
-    const randomArray = new Uint8Array(16);
-    crypto.getRandomValues(randomArray);
-    const randomHex = Array.from(randomArray).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+  const isDsaValid = Boolean(verificationResult && verificationResult.verified);
+  const isDsaTamperFailed = Boolean(tamperTestResult && tamperTestResult.verified);
 
-    const privKey = 'PRIV-MLKEM-' + randomHex;
-    const pubKey = 'PUB-MLKEM-' + (await sha256Hex(privKey));
+  const isKemValid = Boolean(decapResult && decapResult.sharedSecretMatch);
+  const isKemTamperMatched = Boolean(kemTamperResult && kemTamperResult.sharedSecretMatch);
 
-    setKeyPair({ privateKey: privKey, publicKey: pubKey });
-    setSignature(null);
-    setVerificationResult(null);
+  const kemTamperStyle = {
+    marginTop: '0.5rem',
+    color: isKemTamperMatched ? '#f87171' : '#34d399'
   };
 
-  const signMessage = async () => {
-    if (!keyPair) return;
-    const sigPayload = `${message}:${keyPair.privateKey}`;
-    const sig = await sha256Hex(sigPayload);
-    setSignature(`ML-DSA-SIG-${sig}`);
-    setVerificationResult(null);
+  const kemValidStyle = {
+    marginTop: '0.5rem',
+    color: isKemValid ? '#34d399' : '#f87171'
   };
 
-  const verifySignature = async () => {
-    if (!keyPair || !signature) return;
-    const sigPayload = `${message}:${keyPair.privateKey}`;
-    const expected = 'ML-DSA-SIG-' + (await sha256Hex(sigPayload));
-    setVerificationResult(signature === expected);
-  };
+  const dsaStatusText = isDsaValid ? '✓ VERIFICATION SUCCESSFUL — PROOF AUTHORIZED' : '❌ VERIFICATION FAILED';
+  const dsaTamperText = isDsaTamperFailed ? 'FAIL (Tamper undetected)' : 'PASS (Tampered payload correctly rejected)';
+  const kemValidText = isKemValid ? 'VERIFIED MATCH' : 'MISMATCH';
+  const kemTamperText = isKemTamperMatched ? 'ACCEPTED (Error)' : 'REJECTED (Correct)';
 
   return (
     <div style={{ padding: '2rem', backgroundColor: '#090d16', color: '#f8fafc', minHeight: '100vh', fontFamily: 'monospace' }}>
@@ -135,25 +118,26 @@ export default function PQCDemoPage() {
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-        {/* Left Panel: Cryptographic Operations */}
+        {/* Left Panel: ML-DSA Operations */}
         <div style={{ backgroundColor: '#0f172a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
-          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: 0 }}>1. Cryptographic Key Generation</h2>
+          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: 0 }}>1. ML-DSA Digital Signature Verification</h2>
           <button
-            onClick={generateKeys}
+            onClick={handleGenerateDsaKeypair}
+            disabled={loading}
             style={{ backgroundColor: '#0284c7', color: '#fff', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
           >
-            GENERATE ML-KEM / ML-DSA KEYPAIR
+            GENERATE ML-DSA KEYPAIR
           </button>
 
-          {keyPair && (
+          {dsaKeypair && (
             <div style={{ marginTop: '1rem', fontSize: '0.8rem', wordBreak: 'break-all', backgroundColor: '#1e293b', padding: '1rem', borderRadius: '4px' }}>
-              <p style={{ color: '#22c55e', margin: '0 0 0.5rem 0' }}>✓ KEYPAIR GENERATED SUCCESSFULLY</p>
-              <div style={{ color: '#38bdf8' }}><strong>PUBLIC KEY (FIPS 203):</strong> {keyPair.publicKey}</div>
-              <div style={{ color: '#94a3b8', marginTop: '0.5rem' }}><strong>PRIVATE KEY (ZEROIZED MEMORY):</strong> [ENCRYPTED IN RUNTIME]</div>
+              <p style={{ color: '#22c55e', margin: '0 0 0.5rem 0' }}>✓ KEYPAIR GENERATED</p>
+              <div style={{ color: '#38bdf8' }}><strong>PUBLIC KEY:</strong> {dsaKeypair.publicKeyHex.slice(0, 48)}...</div>
+              <div style={{ color: '#94a3b8', marginTop: '0.5rem' }}><strong>PRIVATE KEY HANDLE:</strong> {dsaKeypair.secretKeyHandle}</div>
             </div>
           )}
 
-          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: '2rem' }}>2. Sign Message Payload (ML-DSA)</h2>
+          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: '2rem' }}>2. Sign Message Payload</h2>
           <input
             type="text"
             value={message}
@@ -161,46 +145,71 @@ export default function PQCDemoPage() {
             style={{ width: '100%', padding: '0.5rem', backgroundColor: '#1e293b', border: '1px solid #334155', color: '#fff', borderRadius: '4px', marginBottom: '1rem' }}
           />
           <button
-            disabled={!keyPair}
-            onClick={signMessage}
-            style={{ backgroundColor: keyPair ? '#0284c7' : '#334155', color: '#fff', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: keyPair ? 'pointer' : 'not-allowed', fontWeight: 'bold' }}
+            disabled={!dsaKeypair || loading}
+            onClick={handleSignMessage}
+            style={{ backgroundColor: dsaKeypair ? '#0284c7' : '#334155', color: '#fff', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: dsaKeypair ? 'pointer' : 'not-allowed', fontWeight: 'bold' }}
           >
-            GENERATE DIGITAL SIGNATURE
+            GENERATE ML-DSA SIGNATURE
           </button>
 
-          {signature && (
+          {signatureResult && (
             <div style={{ marginTop: '1rem', fontSize: '0.8rem', wordBreak: 'break-all', backgroundColor: '#1e293b', padding: '1rem', borderRadius: '4px' }}>
               <p style={{ color: '#38bdf8', margin: '0 0 0.5rem 0' }}>✓ SIGNATURE GENERATED</p>
-              <div style={{ color: '#f59e0b' }}>{signature}</div>
+              <div style={{ color: '#f59e0b' }}>{signatureResult.signatureHex.slice(0, 48)}...</div>
+            </div>
+          )}
+
+          {signatureResult && (
+            <button
+              onClick={handleVerifySignature}
+              disabled={loading}
+              style={{ marginTop: '1rem', backgroundColor: '#22c55e', color: '#000', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+            >
+              VERIFY SIGNATURE IN SENTINEL-1
+            </button>
+          )}
+
+          {verificationResult && (
+            <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '4px', backgroundColor: isDsaValid ? '#064e3b' : '#7f1d1d', border: `1px solid ${isDsaValid ? '#10b981' : '#ef4444'}` }}>
+              <h3 style={{ margin: 0, color: isDsaValid ? '#34d399' : '#f87171' }}>
+                {dsaStatusText}
+              </h3>
+              {tamperTestResult && (
+                <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0 0', color: isDsaTamperFailed ? '#f87171' : '#34d399' }}>
+                  Tamper Test Status: {dsaTamperText}
+                </p>
+              )}
             </div>
           )}
         </div>
 
-        {/* Right Panel: Verification & Guardrail Mesh */}
+        {/* Right Panel: ML-KEM Operations */}
         <div style={{ backgroundColor: '#0f172a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
-          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: 0 }}>3. Deterministic Guardrail Verification</h2>
+          <h2 style={{ color: '#f1f5f9', fontSize: '1.2rem', marginTop: 0 }}>3. ML-KEM Key Encapsulation Suite</h2>
           <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
-            JARVIS Proof-before-Trust Guardrail verifies the ML-DSA signature before authorizing execution.
+            Tests FIPS 203 encapsulation, shared secret derivation, and decapsulation integrity.
           </p>
 
           <button
-            disabled={!signature}
-            onClick={verifySignature}
-            style={{ backgroundColor: signature ? '#22c55e' : '#334155', color: '#000', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: signature ? 'pointer' : 'not-allowed', fontWeight: 'bold' }}
+            onClick={handleRunKemSuite}
+            disabled={loading}
+            style={{ backgroundColor: '#8b5cf6', color: '#fff', border: 'none', padding: '0.6rem 1.2rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
           >
-            VERIFY SIGNATURE IN DAGM MESH
+            EXECUTE ML-KEM ENCAPSULATION & DECAPSULATION
           </button>
 
-          {verificationResult !== null && (
-            <div style={{ marginTop: '1.5rem', padding: '1rem', borderRadius: '4px', backgroundColor: verificationResult ? '#064e3b' : '#7f1d1d', border: `1px solid ${verificationResult ? '#10b981' : '#ef4444'}` }}>
-              <h3 style={{ margin: 0, color: verificationResult ? '#34d399' : '#f87171' }}>
-                {verificationResult ? '✓ VERIFICATION SUCCESSFUL — PROOF AUTHORIZED' : '❌ VERIFICATION FAILED — REJECTED BY DAGM'}
-              </h3>
-              <p style={{ fontSize: '0.8rem', margin: '0.5rem 0 0 0', color: '#cbd5e1' }}>
-                {verificationResult
-                  ? 'The state transition command signature matches the registered ML-KEM keypair. Executing state commit.'
-                  : 'Signature mismatch or payload tampering detected. Mutation rejected.'}
-              </p>
+          {kemKeypair && encapResult && decapResult && (
+            <div style={{ marginTop: '1.5rem', backgroundColor: '#1e293b', padding: '1rem', borderRadius: '4px', fontSize: '0.8rem' }}>
+              <p style={{ color: '#a78bfa', fontWeight: 'bold' }}>✓ ML-KEM EXECUTED</p>
+              <div><strong>Ciphertext:</strong> {encapResult.result.ciphertextHex.slice(0, 32)}...</div>
+              <div style={kemValidStyle}>
+                <strong>Shared Secret Match:</strong> {kemValidText}
+              </div>
+              {kemTamperResult && (
+                <div style={kemTamperStyle}>
+                  <strong>Tampered Ciphertext Rejection:</strong> {kemTamperText}
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -32,6 +32,40 @@ export interface EntitlementRecord {
   signature: string;
 }
 
+export type TruthState = 'EXISTING' | 'VERIFIED' | 'TARGET' | 'CONTRADICTED' | 'UNVERIFIED';
+
+export interface Node {
+  id: string;
+  type: string;
+  label: string;
+  properties?: Record<string, any>;
+}
+
+export interface Edge {
+  id: string;
+  from: string;
+  to: string;
+  relationship: string;
+  properties?: Record<string, any>;
+}
+
+export interface Claim {
+  id: string;
+  subject: string;
+  predicate: string;
+  object: string;
+  truth: TruthState;
+  evidenceLevel?: string;
+}
+
+export interface WorldState {
+  fingerprint: string;
+  nodes: Node[];
+  edges: Edge[];
+  claims: Claim[];
+  asOf: string;
+}
+
 export const PRODUCTS: ProductCatalogItem[] = [
   {
     id: 'NEX-PORTAL',
