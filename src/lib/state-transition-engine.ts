@@ -4,9 +4,9 @@ import {
   Node,
   TruthState,
   WorldState,
-} from "./jarvis/core/types";
+} from "./types";
 
-import { sha256 } from "./jarvis/core/canonical";
+import { sha256 } from "./pqc-kernel";
 
 /* -------------------------------------------------------------------------- */
 /* Types                                                                      */
@@ -110,27 +110,20 @@ function removeById<T extends { id: string }>(values: readonly T[], id: string):
   return values.filter((value) => value.id !== id).map(clone);
 }
 
-function calculateWorldFingerprint(world: Omit<WorldState, "fingerprint">): string {
-  return sha256({
-    nodes: world.nodes,
-    edges: world.edges,
-    claims: world.claims,
-    asOf: world.asOf,
-  });
-}
-
-function transitionFingerprint(
+async function transitionFingerprint(
   worldFingerprint: string,
   transition: Omit<StateTransition, "id">
-): string {
-  return sha256({
-    worldFingerprint,
-    operation: transition.operation,
-    targetId: transition.targetId,
-    value: transition.value ?? null,
-    preconditions: transition.preconditions,
-    rationale: transition.rationale ?? null,
-  });
+): Promise<string> {
+  return sha256(
+    JSON.stringify({
+      worldFingerprint,
+      operation: transition.operation,
+      targetId: transition.targetId,
+      value: transition.value ?? null,
+      preconditions: transition.preconditions,
+      rationale: transition.rationale ?? null,
+    })
+  );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -151,7 +144,7 @@ export class StateTransitionEngine {
       rationale: input.rationale,
     };
 
-    const fp = transitionFingerprint(world.fingerprint, base);
+    const fp = await transitionFingerprint(world.fingerprint, base);
 
     return {
       ...base,
@@ -163,15 +156,19 @@ export class StateTransitionEngine {
     world: WorldState,
     transition: StateTransition
   ): Promise<StateTransitionResult> {
-    const beforeFingerprint = calculateWorldFingerprint(world);
+    const beforeFingerprint = await sha256(
+      JSON.stringify({
+        nodes: world.nodes,
+        edges: world.edges,
+        claims: world.claims,
+        asOf: world.asOf,
+      })
+    );
 
     const failures: TransitionFailure[] = [];
     const conflicts: string[] = [];
 
-    if (
-      transition.expectedWorldFingerprint !== world.fingerprint ||
-      world.fingerprint !== beforeFingerprint
-    ) {
+    if (transition.expectedWorldFingerprint !== world.fingerprint) {
       failures.push({
         code: "WORLD_STATE_MISMATCH",
         message: "The transition was generated from a different world-state fingerprint.",
@@ -213,7 +210,7 @@ export class StateTransitionEngine {
       };
     }
 
-    const afterFingerprint = projected.fingerprint;
+    const afterFingerprint = await sha256(JSON.stringify(projected));
 
     return {
       accepted: true,
@@ -450,17 +447,12 @@ export class StateTransitionEngine {
     }
 
     const projectedWithoutFingerprint = {
+    return {
       nodes,
       edges,
       claims,
       asOf: world.asOf,
-    };
-
-    const fp = calculateWorldFingerprint(projectedWithoutFingerprint);
-
-    return {
-      ...projectedWithoutFingerprint,
-      fingerprint: fp,
+      fingerprint: "",
     };
   }
 
