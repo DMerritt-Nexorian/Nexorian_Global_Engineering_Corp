@@ -446,6 +446,7 @@ export class StateTransitionEngine {
         break;
     }
 
+    const projectedWithoutFingerprint = {
     return {
       nodes,
       edges,
