@@ -3,19 +3,20 @@
 **Project Nexus / Nexorian Corporation Executive Systems ARCS Group**
 **Version 2.1 Commercialization, Governance & Software Release Division**
 **Author:** Jules@Google (Autonomous Commercialization & Release Agent)
-**Date:** 2026-09-26
 **Control Repository:** `Nexorian_Global_Engineering_Corp`
 
 ---
 
 ## Executive Summary
 
-This Master Report presents the authoritative, evidence-backed commercialization and governance audit of the Project Nexus software portfolio. Every claim in this report is qualified by explicit evidence level tags (`VERIFIED`, `DOCUMENTED`, `UNVERIFIED`, `CONTRADICTED`, `ACCESS UNVERIFIED`) in strict accordance with JARVIS MasterPrompt Directive Section 9 and 55.
+This Master Report presents the authoritative, evidence-backed commercialization and governance audit of the Project Nexus software portfolio. Every claim in this report is qualified by explicit evidence level tags (`VERIFIED`, `DOCUMENTED`, `UNVERIFIED`, `CONTRADICTED`, `ACCESS UNVERIFIED`) in strict accordance with JARVIS MasterPrompt directives.
 
-A total of **11 repository assets** were evaluated across the Project Nexus ecosystem.
+The platform architecture strictly separates the **Corporate Control Plane** (`Nexorian_Global_Engineering_Corp`) from the **10 Commercial Portfolio Products**.
 
-### Portfolio Status Breakdown
-- **STATUS A — Technically Ready for Human Review:** 1 Repository (`Nexorian_Global_Engineering_Corp`)
+### Platform Substrate
+- **Corporate Control Plane:** `Nexorian_Global_Engineering_Corp` (Control Surface, Intelligence Substrate, VDR; excluded from commercial product sales catalog).
+
+### Portfolio Commercial Status Breakdown (10 Products)
 - **STATUS B — Conditional Release:** 1 Repository (`Vita-Crypto-Wealth`)
 - **STATUS C — Engineering Complete / External Validation Required:** 2 Repositories (`Core_Sec_NTT`, `CORE_SEC_PQC`)
 - **STATUS D — Active Engineering Development:** 5 Repositories (`HD-GTLM`, `CORE_GLOBAL`, `Integrated_Control_Core`, `Solid_State_BMS`, `CORE_AGRI`)
@@ -29,7 +30,7 @@ A total of **11 repository assets** were evaluated across the Project Nexus ecos
 ## Responses to 15 Mandatory Audit Questions
 
 ### 1. What repositories actually exist?
-- **[VERIFIED]** `Nexorian_Global_Engineering_Corp` exists locally as the designated control and web portal repository.
+- **[VERIFIED]** `Nexorian_Global_Engineering_Corp` exists locally as the designated corporate control plane and web portal repository.
 - **[DOCUMENTED]** 10 remote portfolio repositories are defined in the Project Nexus portfolio documentation: `Vita-Crypto-Wealth`, `Core_Sec_NTT`, `CORE_SEC_PQC`, `HD-GTLM`, `Core_Gen`, `CORE_GLOBAL`, `Core_Quantum_Time`, `Integrated_Control_Core`, `Solid_State_BMS`, and `CORE_AGRI`.
 
 ### 2. Which repositories are accessible?
@@ -37,7 +38,7 @@ A total of **11 repository assets** were evaluated across the Project Nexus ecos
 - **[ACCESS UNVERIFIED]** The 10 remote portfolio repositories could not be directly inspected via network remotes in the current isolated sandbox session and are logged as `ACCESS UNVERIFIED`.
 
 ### 3. Which contain identifiable products?
-- **[VERIFIED]** `Nexorian_Global_Engineering_Corp` contains the Executive Web Portal and Virtual Data Room (`NEX-PORTAL`).
+- **[VERIFIED]** `Nexorian_Global_Engineering_Corp` serves as the Executive Control Plane and Virtual Data Room.
 - **[DOCUMENTED]** All 10 remote repositories contain distinct candidate products mapped in `PRODUCT_CATALOG.md` (e.g., Post-Quantum Cryptography libraries, NTT accelerators, hardware RTL, bio-intelligence engines).
 
 ### 4. Which products actually build?
@@ -45,7 +46,7 @@ A total of **11 repository assets** were evaluated across the Project Nexus ecos
 - **[ACCESS UNVERIFIED]** Remote repositories require CI execution verification upon remote access restoration.
 
 ### 5. Which products actually test?
-- **[VERIFIED]** Staging linting and test passes executed in control repo.
+- **[VERIFIED]** Staging linting and test passes executed in control repo (`npm test`).
 - **[ACCESS UNVERIFIED]** Remote test suites logged as `ACCESS UNVERIFIED`.
 
 ### 6. Which products have release artifacts?
@@ -64,7 +65,7 @@ A total of **11 repository assets** were evaluated across the Project Nexus ecos
 - **[ACCESS UNVERIFIED]** Remote repositories require automated secret scanning prior to release candidate staging.
 
 ### 10. Which products are technically ready for human commercialization review?
-- **[VERIFIED]** `Nexorian_Global_Engineering_Corp` (`NEX-PORTAL`) is staged at `STATUS A — TECHNICALLY READY FOR HUMAN REVIEW`.
+- **[VERIFIED]** `Nexorian_Global_Engineering_Corp` is staged as the Corporate Control Plane (`STATUS A — TECHNICALLY READY FOR HUMAN REVIEW`).
 
 ### 11. Which products require external validation?
 - **[DOCUMENTED]** `CORE_SEC_PQC` (requires FIPS 203/204 validation), `Core_Sec_NTT` (requires formal math verification), `Core_Gen` (requires bio-safety review).
