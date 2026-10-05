@@ -1,11 +1,4 @@
-import {
-  AuthorityRole,
-  AuthorizationDecision,
-  ProposedStateTransition,
-  SentinelValidationResult,
-  ExecutionIntent
-} from './types';
-import { JarvisSentinelGate, SentinelGateResult, DEFAULT_SENTINEL_POLICY } from './jarvis-sentinel-gate';
+import { ProposedStateTransition, SentinelValidationResult } from './types';
 import { generateExperimentalDsaKeypair, signExperimentalDsaMessage } from './pqc-kernel';
 
 /**
@@ -15,14 +8,6 @@ import { generateExperimentalDsaKeypair, signExperimentalDsaMessage } from './pq
 export class SentinelGuard {
   private static sentinelDsaHandle: string | null = null;
   private static sentinelPubKeyHex: string | null = null;
-  private static gate = new JarvisSentinelGate(DEFAULT_SENTINEL_POLICY);
-
-  /**
-   * Get reference to internal JarvisSentinelGate instance.
-   */
-  public static getGate(): JarvisSentinelGate {
-    return this.gate;
-  }
 
   /**
    * Initialize Sentinel-1 Cryptographic Signing Identity.
@@ -36,103 +21,40 @@ export class SentinelGuard {
   }
 
   /**
-   * Evaluate an ExecutionIntent using JarvisSentinelGate.
+   * Validate a proposed state transition against Sentinel-1 deterministic policy.
    */
-  public static evaluateGate(intent: ExecutionIntent | undefined): SentinelGateResult {
-    return this.gate.evaluate(intent);
-  }
-
-  /**
-   * Evaluate authorization for a proposed execution intent against Sentinel-1 deterministic policy.
-   * Conforms to JARVIS CORE CONTRACTS (AuthorizationDecision).
-   */
-  public static async evaluateAuthorization(
-    intentId: string,
-    actionType: string,
-    targetResource: string,
-    requesterRole: AuthorityRole
-  ): Promise<AuthorizationDecision> {
+  public static async validateAction(proposal: ProposedStateTransition): Promise<SentinelValidationResult> {
     await this.initializeIdentity();
-    const evaluatedAt = new Date().toISOString();
 
     // 1. Role-based Policy Enforcement
-    const isFounderAction = actionType.startsWith('FOUNDER_') || targetResource.includes('GOVERNANCE');
-    if (isFounderAction && requesterRole !== 'FOUNDER') {
+    const isFounderAction = proposal.actionType.startsWith('FOUNDER_') || proposal.targetResource.includes('GOVERNANCE');
+    if (isFounderAction && proposal.requesterRole !== 'FOUNDER') {
       return {
-        decision: 'DENIED',
-        intentId,
-        authorizedRole: requesterRole,
+        authorized: false,
         reason: 'SENTINEL-1 REJECTION: Resource requires authenticated FOUNDER authority (Gate H1/H3 enforced).',
-        evaluatedAt,
-        evidence: [{
-          id: `EVID-SENTINEL-DENY-${Date.now()}`,
-          sourceType: 'runtime',
-          sourceId: 'SentinelGuard',
-          description: 'Role-based policy rejection enforced for non-FOUNDER role.',
-          truthState: 'VERIFIED',
-          observedAt: evaluatedAt
-        }]
+        invariantsSatisfied: false
       };
     }
 
     // 2. Destructive Invariant Rule
-    if (actionType === 'DELETE_CRITICAL_SYSTEM') {
+    if (proposal.actionType === 'DELETE_CRITICAL_SYSTEM' || proposal.params?.forceWipe === true) {
       return {
-        decision: 'DENIED',
-        intentId,
-        authorizedRole: requesterRole,
+        authorized: false,
         reason: 'SENTINEL-1 REJECTION: Destructive system wipe action strictly prohibited by invariant rule #101.',
-        evaluatedAt,
-        evidence: [{
-          id: `EVID-SENTINEL-WIPE-${Date.now()}`,
-          sourceType: 'runtime',
-          sourceId: 'SentinelGuard',
-          description: 'Destructive system wipe blocked by invariant rule #101.',
-          truthState: 'VERIFIED',
-          observedAt: evaluatedAt
-        }]
+        invariantsSatisfied: false
       };
     }
 
     // 3. Invariant Satisfied -> Generate PQC Authorization Token
-    const payload = `SENTINEL-AUTH:${intentId}:${actionType}:${requesterRole}:${evaluatedAt}`;
+    const payload = `SENTINEL-AUTH:${proposal.actionId}:${proposal.actionType}:${proposal.requesterRole}:${proposal.timestamp}`;
     const sigResult = await signExperimentalDsaMessage(this.sentinelDsaHandle!, payload);
 
     return {
-      decision: 'AUTHORIZED',
-      intentId,
-      authorizedRole: requesterRole,
+      authorized: true,
       reason: 'SENTINEL-1 PASSED: State transition satisfies safety invariants, authority bounds, and policy.',
-      evaluatedAt,
-      evidence: [{
-        id: sigResult.auditId,
-        sourceType: 'tool',
-        sourceId: 'EXPERIMENTAL-LATTICE-DSA',
-        description: `Authorization signature generated: ${sigResult.signatureHex}`,
-        truthState: 'VERIFIED',
-        observedAt: evaluatedAt,
-        contentHash: sigResult.signatureHex
-      }]
-    };
-  }
-
-  /**
-   * Legacy / direct transition validation helper.
-   */
-  public static async validateAction(proposal: ProposedStateTransition): Promise<SentinelValidationResult> {
-    const auth = await this.evaluateAuthorization(
-      proposal.actionId,
-      proposal.actionType,
-      proposal.targetResource,
-      proposal.requesterRole
-    );
-
-    return {
-      authorized: auth.decision === 'AUTHORIZED',
-      reason: auth.reason,
-      invariantsSatisfied: auth.decision === 'AUTHORIZED',
-      authorizationToken: auth.evidence[0]?.contentHash,
-      signatureAuditId: auth.evidence[0]?.id,
+      invariantsSatisfied: true,
+      authorizationToken: sigResult.signatureHex,
+      signatureAuditId: sigResult.auditId,
       pqcAlgorithm: 'EXPERIMENTAL-LATTICE-DSA'
     };
   }

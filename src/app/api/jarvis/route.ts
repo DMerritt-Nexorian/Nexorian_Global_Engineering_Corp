@@ -18,20 +18,12 @@ export async function POST(req: Request) {
   } catch (err: any) {
     return NextResponse.json(
       {
-        requestId: `REQ-ERR-${Date.now()}`,
-        status: 'FAILED',
         answer: 'JARVIS Execution Error',
         truthState: 'FAILED',
-        trace: [],
-        evidence: [],
-        failure: {
-          category: 'EXECUTION_FAILURE',
-          description: err.message,
-          evidence: [],
-          confidence: 1,
-          recoveryOptions: []
-        },
-        cognitionCost: { cpuMs: 0, memoryBytes: 0, cryptoOpsCount: 0, economicCost: 'UNMEASURED' }
+        evidenceLevel: 'LEVEL 0',
+        evidenceDetails: err.message,
+        governanceStatus: 'EXECUTION_EXCEPTION',
+        cognitionCost: { cpuMs: 0, memoryMB: 0, cryptoOpsCount: 0, economicCost: 'UNMEASURED' }
       },
       { status: 500 }
     );
