@@ -3,16 +3,10 @@
 
 import { useState } from "react";
 
-type Reply = {
-  answer?: string;
-  truthState?: string;
-  evidenceDetails?: string;
-  governanceStatus?: string;
-  error?: string;
-};
+type Reply = { answer?: string; truthState?: string; evidenceDetails?: string; governanceStatus?: string; error?: string };
 
 export default function JarvisPage() {
-  const [query, setQuery] = useState("What can you do, and which records are not for lease?");
+  const [query, setQuery] = useState("Give the research brief for the next step.");
   const [reply, setReply] = useState<Reply | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -36,14 +30,14 @@ export default function JarvisPage() {
   return (
     <main>
       <p className="kicker">Jarvis</p>
-      <h1>Bound to this repository</h1>
+      <h1>Propose. Sentinel decides. Then the tool runs.</h1>
       <p className="lede">
-        Ask for a repository inspection, the NTT, the experimental lattice kernel, or a registry record.
-        If no tool matches, the answer is unknown. This is not a general model and it does not lease software.
+        Jarvis can inspect this repository, read a confined file, run the N=8 transform, run the experimental lattice kernel, and step the interlock model.
+        A question with no tool comes back unknown.
       </p>
       <form onSubmit={submit}>
         <textarea value={query} onChange={(e) => setQuery(e.target.value)} />
-        <button className="btn" type="submit" disabled={pending}>{pending ? "Running" : "Run"}</button>
+        <button className="btn" type="submit" disabled={pending}>{pending ? "Running" : "Submit to Sentinel"}</button>
       </form>
       {reply ? (
         <section className="card" style={{ marginTop: "1rem" }}>
