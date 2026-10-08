@@ -3,6 +3,7 @@ import * as path from "path";
 import { ProposedStateTransition, SentinelValidationResult } from "./types";
 import { SentinelGuard } from "./sentinel-dagm";
 import { executeNTTTransformation } from "./ntt-kernel";
+import { HdGtlmModel, nominalSample } from "./hd-gtlm-model";
 import { PORTAL_SURFACE, publicProducts, REGISTERED_PRODUCTS } from "./products-registry";
 
 export type Role = "PUBLIC" | "DEVELOPER" | "FOUNDER";
@@ -44,6 +45,9 @@ export function planQuery(query: string): ToolStep[] {
   }
   if (q.includes("product") || q.includes("catalog") || q.includes("lease") || q.includes("sale") || q.includes("registry")) {
     steps.push({ actionType: "READ_REGISTRY", targetResource: "product_registry", params: {}, purpose: "Read the local product registry." });
+  }
+  if (q.includes("gtlm") || q.includes("interlock") || q.includes("tensor")) {
+    steps.push({ actionType: "RUN_GTLM_INTERLOCK", targetResource: "hd_gtlm_model", params: {}, purpose: "Step the local HD-GTLM interlock model." });
   }
   if (q.includes("coach") || q.includes("research") || q.includes("next step") || q.includes("roadmap")) {
     steps.push({ actionType: "COACH_BRIEF", targetResource: "local_docs", params: { query }, purpose: "Produce a research brief from local files only." });
@@ -121,6 +125,14 @@ function executeAuthorized(step: ToolStep): { summary: string; data?: unknown } 
   if (step.actionType === "COACH_BRIEF") {
     return { summary: coachBrief(), data: { source: "local repository only" } };
   }
+  if (step.actionType === "RUN_GTLM_INTERLOCK") {
+    const model = new HdGtlmModel();
+    model.step({ ...nominalSample(), reset: true });
+    model.step(nominalSample());
+    const driving = model.step(nominalSample());
+    const tripped = model.step({ ...nominalSample(), x: 1851 });
+    return { summary: `HD-GTLM interlock model stepped. Nominal relay ${driving.relayEnable}. Over-limit x entered ${tripped.state}. This is a software model of the supplied rules, not a fabricated chip.`, data: { driving, tripped } };
+  }
   return { summary: `UNIMPLEMENTED: Action type ${step.actionType} is not bound to an executable tool capability.` };
 }
 
@@ -136,4 +148,4 @@ export function coachBrief(): string {
   ].join(" ");
 }
 
-export const REGISTERED_TOOL_NAMES = ["INSPECT_REPOSITORY", "READ_SOURCE_FILE", "RUN_NTT_TRANSFORM", "RUN_PQC_SIGNATURE", "READ_REGISTRY", "FOUNDER_GOVERNANCE_INSPECT", "COACH_BRIEF"] as const;
+export const REGISTERED_TOOL_NAMES = ["INSPECT_REPOSITORY", "READ_SOURCE_FILE", "RUN_NTT_TRANSFORM", "RUN_PQC_SIGNATURE", "READ_REGISTRY", "FOUNDER_GOVERNANCE_INSPECT", "COACH_BRIEF", "RUN_GTLM_INTERLOCK"] as const;

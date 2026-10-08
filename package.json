@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start -p ${PORT:-3000}",
     "lint": "next lint",
-    "test": "tsx test/portal.test.ts && tsx test/ntt.test.ts && tsx test/pqc.test.ts && tsx test/entitlement.test.ts && tsx test/jarvis_sentinel_core.test.ts && tsx test/failure_injection_security.test.ts"
+    "test": "tsx test/hd-gtlm-model.test.ts && tsx test/portal.test.ts && tsx test/ntt.test.ts && tsx test/pqc.test.ts && tsx test/entitlement.test.ts && tsx test/jarvis_sentinel_core.test.ts && tsx test/failure_injection_security.test.ts"
   },
   "dependencies": {
     "next": "^14.2.5",
