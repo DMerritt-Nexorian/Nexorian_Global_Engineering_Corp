@@ -1,3 +1,5 @@
+> The portal repository is the operating surface. It is not for sale or lease. Dollar amounts in older copies of this file are not offers.
+
 # Product Catalog
 
 **Nexorian Corporation / Commercial Release Division**

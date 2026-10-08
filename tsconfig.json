@@ -35,6 +35,18 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/lib/counterfactual-engine.ts",
+    "src/lib/state-transition-engine.ts",
+    "src/lib/jarvis-contracts.ts",
+    "src/lib/jarvis-evidence-engine.ts",
+    "src/lib/jarvis-execution-fabric.ts",
+    "src/lib/jarvis-intent-compiler.ts",
+    "src/lib/jarvis-plan.ts",
+    "src/lib/jarvis-reasoning-engine.ts",
+    "src/lib/jarvis-sentinel-gate.ts",
+    "src/lib/jarvis-world-model.ts",
+    "src/lib/jarvis",
+    "test"
   ]
 }

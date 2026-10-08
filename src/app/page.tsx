@@ -1,20 +1,32 @@
+
+import Link from "next/link";
+
 export default function HomePage() {
   return (
-    <div style={{ fontFamily: 'sans-serif', padding: '2rem', backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', textAlign: 'center' }}>
-      <h1 style={{ fontSize: '2.5rem', color: '#38bdf8' }}>NEXORIAN GLOBAL ENGINEERING CORP.</h1>
-      <p style={{ fontSize: '1.2rem', color: '#94a3b8', maxWidth: '800px', margin: '1rem auto' }}>
-        Executive Systems ARCS Group — Production Web Portal, 3D WebGL Jarvis AI Entity, and Air-Gapped Virtual Data Room (VDR).
+    <main>
+      <p className="kicker">Operating surface</p>
+      <h1>Nexorian Global Engineering Corp</h1>
+      <p className="lede">
+        This application is the portal for the repository. It is not an asset offered for sale or lease.
+        Product names below are registry records. A record is not a completed product, a certification, or a contract.
       </p>
-
-      <div style={{ margin: '2rem 0' }}>
-        <a href="/products" style={{ padding: '0.75rem 1.5rem', backgroundColor: '#0284c7', color: '#fff', textDecoration: 'none', borderRadius: '6px', fontWeight: 'bold' }}>
-          Explore Commercial Product Catalog
-        </a>
+      <p>
+        <Link className="btn" href="/products">Open the registry</Link>
+        {" "}
+        <Link className="btn" href="/jarvis">Open Jarvis</Link>
+      </p>
+      <div className="grid">
+        <section className="card">
+          <p className="meta">Working in this deployment</p>
+          <h2>Local demonstrations</h2>
+          <p>An 8-coefficient number-theoretic transform, and an experimental lattice kernel. Both run in this application. Neither is a certified cryptographic module.</p>
+        </section>
+        <section className="card">
+          <p className="meta">Not in this deployment</p>
+          <h2>No lease desk</h2>
+          <p>No payment provider is connected. Checkout refuses. Downloads, checksums, and dollar amounts previously shown here were not evidence.</p>
+        </section>
       </div>
-
-      <div style={{ borderTop: '1px solid #334155', paddingTop: '2rem', marginTop: '4rem', color: '#64748b', fontSize: '0.875rem' }}>
-        Copyright © 2026 Dennis W. Merritt / Nexorian Corporation. All rights reserved.
-      </div>
-    </div>
+    </main>
   );
 }

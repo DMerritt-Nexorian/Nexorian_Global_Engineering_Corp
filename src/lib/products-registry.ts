@@ -1,191 +1,260 @@
-import { ProductCatalogItem } from './types';
+import { ProductCatalogItem } from "./types";
+
+export type ImplementationStatus =
+  | "IMPLEMENTED"
+  | "EXPERIMENTAL"
+  | "PARTIALLY_IMPLEMENTED"
+  | "UNVERIFIED"
+  | "NOT_IMPLEMENTED";
+
+export type CommercialOffer = "NOT_OFFERED" | "INTERNAL_ONLY";
 
 export interface ProductRegistryEntry extends ProductCatalogItem {
-  buildStatus: 'SUCCESS' | 'PENDING' | 'ACCESS UNVERIFIED';
+  implementationStatus: ImplementationStatus;
+  commercialOffer: CommercialOffer;
+  publicVisible: boolean;
+  founderVisible: boolean;
+  forSaleOrLease: false;
   demoRoute?: string;
-  downloadArtifact?: string;
-  sha256Checksum?: string;
-  sbomUrl?: string;
-  enterprisePriceUSD: number;
+  demoNote?: string;
+  limitations: string;
+  evidence: string;
 }
 
+/**
+ * The portal repository is the operating surface. It is not a catalog product.
+ * Prices are omitted because no approved commercial offer exists in this repository.
+ */
 export const REGISTERED_PRODUCTS: ProductRegistryEntry[] = [
   {
-    id: 'NEX-PORTAL',
-    name: 'Nexorian Executive Web Portal & VDR',
-    repo: 'Nexorian_Global_Engineering_Corp',
-    category: 'Web Platform / Data Room',
-    proposedStatus: 'STATUS A — TECHNICALLY READY FOR HUMAN REVIEW',
-    targetCustomer: 'Enterprise / Investors',
-    licenseType: 'Proprietary Commercial',
-    platforms: ['Node.js', 'Next.js', 'WASM'],
-    description: 'Production Web Portal, 3D WebGL Jarvis entity, and air-gapped Virtual Data Room.',
-    priceUSD: 4999,
-    enterprisePriceUSD: 45000,
-    buildStatus: 'SUCCESS',
-    demoRoute: '/demos/pqc',
-    downloadArtifact: '/downloads/nexorian-portal-v1.0.0-staging.tar.gz',
-    sha256Checksum: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-    sbomUrl: '/downloads/sbom-nex-portal.json'
-  },
-  {
-    id: 'NEX-PQC',
-    name: 'Core Sec Post-Quantum Cryptography',
-    repo: 'CORE_SEC_PQC',
-    category: 'Security / Cryptography',
-    proposedStatus: 'STATUS C — EXTERNAL VALIDATION REQUIRED',
-    targetCustomer: 'Defense / Financial Enterprise',
-    licenseType: 'Proprietary Commercial',
-    platforms: ['Linux', 'Windows', 'WASM'],
-    description: 'Post-Quantum Cryptography suite implementing FIPS 203 (ML-KEM) & FIPS 204 (ML-DSA).',
-    priceUSD: 12500,
-    enterprisePriceUSD: 120000,
-    buildStatus: 'ACCESS UNVERIFIED',
-    demoRoute: '/demos/pqc',
-    downloadArtifact: '/downloads/core-sec-pqc-v1.0.0.tar.gz',
-    sha256Checksum: 'a7c9f82d01e4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8',
-    sbomUrl: '/downloads/sbom-core-sec-pqc.json'
-  },
-  {
-    id: 'NEX-NTT',
-    name: 'Core Sec NTT Accelerator',
-    repo: 'Core_Sec_NTT',
-    category: 'Cryptographic Hardware/SW',
-    proposedStatus: 'STATUS C — EXTERNAL VALIDATION REQUIRED',
-    targetCustomer: 'Chip Designers / Security OEMs',
-    licenseType: 'Commercial IP Licensing',
-    platforms: ['Verilog', 'RTL', 'C++'],
-    description: 'High-performance Number Theoretic Transform polynomial arithmetic core over prime moduli.',
-    priceUSD: 25000,
-    enterprisePriceUSD: 250000,
-    buildStatus: 'ACCESS UNVERIFIED',
-    demoRoute: '/demos/ntt',
-    downloadArtifact: '/downloads/core-sec-ntt-rtl.tar.gz',
-    sha256Checksum: 'f1e2d3c4b5a69887766554433221100f8e7d6c5b4a3928170615243342516071',
-    sbomUrl: '/downloads/sbom-core-sec-ntt.json'
-  },
-  {
-    id: 'NEX-DAGM',
-    name: 'Nexorian DAGM Guardrail Mesh',
-    repo: 'Nexorian_DAGM_Guardrail',
-    category: 'AI Safety / Execution Control',
-    proposedStatus: 'STATUS A — TECHNICALLY READY FOR HUMAN REVIEW',
-    targetCustomer: 'AI Enterprise & Defense',
-    licenseType: 'Proprietary Commercial',
-    platforms: ['Rust', 'TypeScript'],
-    description: 'Deterministic Autonomous Guardrail Mesh & Proof-Before-Trust Execution Kernel.',
-    priceUSD: 15000,
-    enterprisePriceUSD: 150000,
-    buildStatus: 'SUCCESS',
-    demoRoute: '/demos/pqc',
-    downloadArtifact: '/downloads/nexorian-dagm-v1.0.0.tar.gz',
-    sha256Checksum: 'b82d01e4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9',
-    sbomUrl: '/downloads/sbom-nex-dagm.json'
-  },
-  {
-    id: 'NEX-VITA',
-    name: 'Vita Crypto Wealth Engine',
-    repo: 'Vita-Crypto-Wealth',
-    category: 'Web3 / FinTech',
-    proposedStatus: 'STATUS B — CONDITIONAL RELEASE',
-    targetCustomer: 'Crypto Wealth Managers',
-    licenseType: 'Proprietary Commercial',
-    platforms: ['Solidity', 'EVM', 'TypeScript'],
-    description: 'Automated DeFi asset allocation and smart contract wealth management engine.',
-    priceUSD: 9900,
-    enterprisePriceUSD: 95000,
-    buildStatus: 'ACCESS UNVERIFIED',
-    downloadArtifact: '/downloads/vita-crypto-v1.0.0.tar.gz',
-    sha256Checksum: 'c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9f82d01e4b3',
-    sbomUrl: '/downloads/sbom-vita-crypto.json'
-  },
-  {
-    id: 'NEX-GTLM',
-    name: 'HD-GTLM Computational Engine',
-    repo: 'HD-GTLM',
-    category: 'Semiconductor IP / RTL',
-    proposedStatus: 'STATUS D — DEVELOPMENT',
-    targetCustomer: 'Semiconductor OEMs',
-    licenseType: 'Commercial IP Licensing',
-    platforms: ['SystemVerilog', 'Verilog', 'Rust'],
-    description: 'High-determinism computational engine and hardware control RTL IP core.',
-    priceUSD: 35000,
-    enterprisePriceUSD: 350000,
-    buildStatus: 'ACCESS UNVERIFIED',
-    downloadArtifact: '/downloads/hd-gtlm-rtl-v1.0.0.tar.gz',
-    sha256Checksum: 'd1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9f82d01e4b3c2',
-    sbomUrl: '/downloads/sbom-hd-gtlm.json'
-  },
-  {
-    id: 'NEX-GEN',
-    name: 'Core Gen Bio-Intelligence System',
-    repo: 'Core_Gen',
-    category: 'Bio-AI / Genomic Engine',
-    proposedStatus: 'STATUS E — RESEARCH / EXPERIMENTAL',
-    targetCustomer: 'Biotech / Research Institutions',
-    licenseType: 'Evaluation / Research License',
-    platforms: ['Linux', 'Python', 'PyTorch', 'CUDA'],
-    description: 'Bio-intelligence & genomic analysis autonomous computational framework.',
+    id: "NEX-PQC",
+    name: "Core Sec Post-Quantum Cryptography",
+    repo: "CORE_SEC_PQC",
+    category: "Cryptography",
+    proposedStatus: "EXTERNAL VALIDATION REQUIRED",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["Unverified in this repository"],
+    description: "Named cryptography repository. This portal does not contain a certified ML-KEM or ML-DSA implementation.",
     priceUSD: 0,
-    enterprisePriceUSD: 200000,
-    buildStatus: 'ACCESS UNVERIFIED',
-    downloadArtifact: '/downloads/core-gen-v1.0.0.tar.gz',
-    sha256Checksum: 'e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9f82d01e4b3c2d1',
-    sbomUrl: '/downloads/sbom-core-gen.json'
+    implementationStatus: "EXPERIMENTAL",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    demoRoute: "/demos/pqc",
+    demoNote: "Portal demonstration of an experimental lattice polynomial kernel over F_12289. Not FIPS 203 or FIPS 204.",
+    limitations: "Experimental only. Not certified. Remote repository contents were not verified by this build.",
+    evidence: "Local module src/lib/pqc-kernel.ts. Remote repo CORE_SEC_PQC is not vendored here."
   },
   {
-    id: 'NEX-GLOBAL',
-    name: 'Core Global Autonomous Mesh Network',
-    repo: 'CORE_GLOBAL',
-    category: 'Infrastructure / Mesh Networking',
-    proposedStatus: 'STATUS D — DEVELOPMENT',
-    targetCustomer: 'Industrial / Telecom Enterprises',
-    licenseType: 'Enterprise Commercial',
-    platforms: ['Go', 'Rust', 'Linux', 'Docker'],
-    description: 'Autonomous distributed mesh network & resilient global node architecture.',
-    priceUSD: 8500,
-    enterprisePriceUSD: 85000,
-    buildStatus: 'ACCESS UNVERIFIED',
-    downloadArtifact: '/downloads/core-global-v1.0.0.tar.gz',
-    sha256Checksum: 'f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9f82d01e4b3c2d1e0',
-    sbomUrl: '/downloads/sbom-core-global.json'
+    id: "NEX-NTT",
+    name: "Core Sec NTT",
+    repo: "Core_Sec_NTT",
+    category: "Finite-field arithmetic",
+    proposedStatus: "EXTERNAL VALIDATION REQUIRED",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["TypeScript demonstration in this portal", "Rust repository not vendored"],
+    description: "Number-theoretic transform work. This portal runs an N=8 demonstration over q=12289. The Rust repository is separate and contains Kani harnesses.",
+    priceUSD: 0,
+    implementationStatus: "EXPERIMENTAL",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    demoRoute: "/demos/ntt",
+    demoNote: "Deterministic forward and inverse NTT on an 8-coefficient polynomial. This is not the Rust core and is not a hardware accelerator.",
+    limitations: "Demonstration size is N=8. Kani proofs live in Core_Sec_NTT, not in this portal repository.",
+    evidence: "src/lib/ntt-kernel.ts recovers the input polynomial under the tests in this repository."
   },
   {
-    id: 'NEX-BMS',
-    name: 'Solid State BMS Controller',
-    repo: 'Solid_State_BMS',
-    category: 'Energy / Battery Management',
-    proposedStatus: 'STATUS D — DEVELOPMENT',
-    targetCustomer: 'EV & Energy Storage OEMs',
-    licenseType: 'Proprietary Commercial',
-    platforms: ['Embedded C', 'RTL', 'ARM Cortex'],
-    description: 'Solid-state battery management system controller and safety firmware core.',
-    priceUSD: 20000,
-    enterprisePriceUSD: 220000,
-    buildStatus: 'ACCESS UNVERIFIED',
-    downloadArtifact: '/downloads/solid-state-bms-v1.0.0.tar.gz',
-    sha256Checksum: 'a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9f82d01e4b3c2d1e0f9',
-    sbomUrl: '/downloads/sbom-solid-state-bms.json'
+    id: "NEX-VITA",
+    name: "Vita Crypto Wealth",
+    repo: "Vita-Crypto-Wealth",
+    category: "Separate repository",
+    proposedStatus: "UNVERIFIED FROM THIS PORTAL",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["Unverified in this repository"],
+    description: "Separate repository. This portal does not execute its contracts or payment flows.",
+    priceUSD: 0,
+    implementationStatus: "UNVERIFIED",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    limitations: "No lease, no custody, and no execution from this application.",
+    evidence: "Name and repository only. Contents were not verified by this build."
   },
   {
-    id: 'NEX-AGRI',
-    name: 'Core Agri Autonomous Systems',
-    repo: 'CORE_AGRI',
-    category: 'AgTech / Embedded Control',
-    proposedStatus: 'STATUS D — DEVELOPMENT',
-    targetCustomer: 'Industrial Agriculture OEMs',
-    licenseType: 'Proprietary Commercial',
-    platforms: ['Python', 'C++', 'IoT Drivers', 'Linux'],
-    description: 'Agricultural tech autonomous hardware & environmental control platform.',
-    priceUSD: 7500,
-    enterprisePriceUSD: 75000,
-    buildStatus: 'ACCESS UNVERIFIED',
-    downloadArtifact: '/downloads/core-agri-v1.0.0.tar.gz',
-    sha256Checksum: 'b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8a7c9f82d01e4b3c2d1e0f9a8',
-    sbomUrl: '/downloads/sbom-core-agri.json'
+    id: "NEX-GTLM",
+    name: "HD-GTLM",
+    repo: "HD-GTLM",
+    category: "Separate repository",
+    proposedStatus: "DEVELOPMENT",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["Unverified in this repository"],
+    description: "Named hardware-control repository. No RTL from that repository is built by this portal.",
+    priceUSD: 0,
+    implementationStatus: "UNVERIFIED",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    limitations: "No artifact, checksum, or demonstration is published here.",
+    evidence: "Catalog entry only."
+  },
+  {
+    id: "NEX-GEN",
+    name: "Core Gen",
+    repo: "Core_Gen",
+    category: "Separate repository",
+    proposedStatus: "RESEARCH",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["Unverified in this repository"],
+    description: "Named research repository. No genomic model runs in this portal.",
+    priceUSD: 0,
+    implementationStatus: "UNVERIFIED",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    limitations: "No research license is issued by this application.",
+    evidence: "Catalog entry only."
+  },
+  {
+    id: "NEX-GLOBAL",
+    name: "Core Global",
+    repo: "CORE_GLOBAL",
+    category: "Separate repository",
+    proposedStatus: "DEVELOPMENT",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["Unverified in this repository"],
+    description: "Named networking repository. This portal does not operate a mesh network.",
+    priceUSD: 0,
+    implementationStatus: "UNVERIFIED",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    limitations: "No nodes, deployment, or lease.",
+    evidence: "Catalog entry only."
+  },
+  {
+    id: "NEX-TIME",
+    name: "Core Quantum Time",
+    repo: "Core_Quantum_Time",
+    category: "Separate repository",
+    proposedStatus: "RESEARCH",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["Unverified in this repository"],
+    description: "Listed in the catalog markdown and absent from the previous code registry. No timing product runs here.",
+    priceUSD: 0,
+    implementationStatus: "UNVERIFIED",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    limitations: "Not a quantum computer and not a leased product.",
+    evidence: "PRODUCT_CATALOG.md entry only."
+  },
+  {
+    id: "NEX-ICC",
+    name: "Integrated Control Core",
+    repo: "Integrated_Control_Core",
+    category: "Separate repository",
+    proposedStatus: "DEVELOPMENT",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["Unverified in this repository"],
+    description: "Listed in the catalog markdown and absent from the previous code registry. No control runtime is included.",
+    priceUSD: 0,
+    implementationStatus: "UNVERIFIED",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    limitations: "No industrial controller is operated by this portal.",
+    evidence: "PRODUCT_CATALOG.md entry only."
+  },
+  {
+    id: "NEX-BMS",
+    name: "Solid State BMS",
+    repo: "Solid_State_BMS",
+    category: "Separate repository",
+    proposedStatus: "DEVELOPMENT",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["Unverified in this repository"],
+    description: "Named battery-management repository. No firmware image is served here.",
+    priceUSD: 0,
+    implementationStatus: "UNVERIFIED",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    limitations: "No safety certification and no download.",
+    evidence: "Catalog entry only."
+  },
+  {
+    id: "NEX-AGRI",
+    name: "Core Agri",
+    repo: "CORE_AGRI",
+    category: "Separate repository",
+    proposedStatus: "DEVELOPMENT",
+    targetCustomer: "Not offered",
+    licenseType: "Not issued from this portal",
+    platforms: ["Unverified in this repository"],
+    description: "Named agricultural-systems repository. No device control is exposed here.",
+    priceUSD: 0,
+    implementationStatus: "UNVERIFIED",
+    commercialOffer: "NOT_OFFERED",
+    publicVisible: true,
+    founderVisible: true,
+    forSaleOrLease: false,
+    limitations: "No field hardware is connected.",
+    evidence: "Catalog entry only."
+  },
+  {
+    id: "NEX-DAGM",
+    name: "Sentinel policy gate",
+    repo: "Nexorian_Global_Engineering_Corp",
+    category: "Portal module",
+    proposedStatus: "EXPERIMENTAL LOCAL MODULE",
+    targetCustomer: "Not offered",
+    licenseType: "Not a separate product",
+    platforms: ["TypeScript, this repository"],
+    description: "Local action gate used by Jarvis. It is a policy check in this repository, not a separate mesh product and not for lease.",
+    priceUSD: 0,
+    implementationStatus: "PARTIALLY_IMPLEMENTED",
+    commercialOffer: "INTERNAL_ONLY",
+    publicVisible: false,
+    founderVisible: true,
+    forSaleOrLease: false,
+    limitations: "Role is taken from the request context. It is not authentication.",
+    evidence: "src/lib/sentinel-dagm.ts"
   }
 ];
 
+export const PORTAL_SURFACE = {
+  id: "NEXORIAN-PORTAL",
+  name: "Nexorian Global Engineering Corp",
+  role: "Operating surface for this repository. Not an asset offered for sale or lease.",
+  forSaleOrLease: false as const
+};
+
 export function getRegisteredProductById(id: string): ProductRegistryEntry | undefined {
-  return REGISTERED_PRODUCTS.find(p => p.id.toUpperCase() === id.toUpperCase() || p.repo.toLowerCase() === id.toLowerCase());
+  const key = id.toLowerCase();
+  return REGISTERED_PRODUCTS.find(
+    (p) => p.id.toLowerCase() === key || p.repo.toLowerCase() === key
+  );
+}
+
+export function publicProducts(): ProductRegistryEntry[] {
+  return REGISTERED_PRODUCTS.filter((p) => p.publicVisible && p.forSaleOrLease === false);
 }

@@ -446,14 +446,14 @@ export class StateTransitionEngine {
         break;
     }
 
-    const projectedWithoutFingerprint = {
-    return {
+    const body = {
       nodes,
       edges,
       claims,
       asOf: world.asOf,
-      fingerprint: "",
     };
+    const fingerprint = require("crypto").createHash("sha256").update(JSON.stringify(body)).digest("hex");
+    return { ...body, fingerprint };
   }
 
   private detectConflicts(world: WorldState): string[] {
