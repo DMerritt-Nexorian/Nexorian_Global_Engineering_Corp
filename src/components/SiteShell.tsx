@@ -9,6 +9,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         <strong>NEXORIAN</strong>
         <Link href="/">Principles</Link>
         <Link href="/products">Registry</Link>
+        <Link href="/downloads">Downloads</Link>
         <Link href="/demonstrations">Demonstrations</Link>
         <Link href="/jarvis">Jarvis</Link>
         <Link href="/founder">Founder</Link>
