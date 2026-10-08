@@ -21,3 +21,5 @@ DigitalOcean:
 - Run command: `npm start`
 - HTTP port: `8080` if the platform sets `PORT`, otherwise Next.js uses `3000`. Set the platform port to the value it injects.
 - Environment: `FOUNDER_ACCESS_TOKEN` for the founder console. Do not commit it.
+
+HD-GTLM in this portal is a software state machine of the supplied interlock rules. It is not a tape-out, a power measurement, or a safety certification.

@@ -5,28 +5,34 @@ export default function HomePage() {
   return (
     <main>
       <p className="kicker">Operating surface</p>
-      <h1>Nexorian Global Engineering Corp</h1>
+      <h1>Proof, then rules, then a repeated result.</h1>
       <p className="lede">
-        This application is the portal for the repository. It is not an asset offered for sale or lease.
-        Product names below are registry records. A record is not a completed product, a certification, or a contract.
-      </p>
-      <p>
-        <Link className="btn" href="/products">Open the registry</Link>
-        {" "}
-        <Link className="btn" href="/jarvis">Open Jarvis</Link>
+        This portal is the public face of the repository. A language model may propose. It may not act.
+        Sentinel-1 is the rule check. A demonstration is admitted only when the same inputs return the same result.
       </p>
       <div className="grid">
         <section className="card">
-          <p className="meta">Working in this deployment</p>
-          <h2>Local demonstrations</h2>
-          <p>An 8-coefficient number-theoretic transform, and an experimental lattice kernel. Both run in this application. Neither is a certified cryptographic module.</p>
+          <p className="meta">01</p>
+          <h2>Proof before trust</h2>
+          <p>A claim is shown with the check that produced it. File presence, a recovered polynomial, or a lockdown transition. Unsigned prose is not proof.</p>
         </section>
         <section className="card">
-          <p className="meta">Not in this deployment</p>
-          <h2>No lease desk</h2>
-          <p>No payment provider is connected. Checkout refuses. Downloads, checksums, and dollar amounts previously shown here were not evidence.</p>
+          <p className="meta">02</p>
+          <h2>Rules before reasoning</h2>
+          <p>Jarvis plans a step. Sentinel-1 allows or refuses it before execution. Founder files and destructive actions are refused to a public caller.</p>
+        </section>
+        <section className="card">
+          <p className="meta">03</p>
+          <h2>Determinism before autonomy</h2>
+          <p>The N=8 transform and the eight-input interlock are deterministic. If a result cannot be repeated, it is not offered as an action.</p>
         </section>
       </div>
+      <p>
+        <Link className="btn" href="/demonstrations">Run a demonstration</Link>
+        <Link className="btn" href="/jarvis">Ask Jarvis</Link>
+        <Link className="btn" href="/products">Read the registry</Link>
+      </p>
+      <p className="note">Not on this site: a lease desk, a certified cryptographic module, a fabricated chip, or a valuation.</p>
     </main>
   );
 }

@@ -13,6 +13,7 @@ import {
   zeroizeSecretKeyHandle
 } from "./pqc-kernel";
 import { PORTAL_SURFACE, REGISTERED_PRODUCTS, publicProducts } from "./products-registry";
+import { coachBrief, planQuery, runPlan } from "./jarvis-loop";
 
 const ROOT = process.cwd();
 
@@ -291,6 +292,19 @@ export class JarvisEngine {
         evidenceDetails: "HUMAN_APPROVAL_REGISTER.md or NEXORIAN_IP_ASSET_REGISTER.md not verified on disk.",
         governanceStatus: sentinelVal.reason,
         cognitionCost: cost(startTime, cryptoOpsCount)
+      };
+    }
+
+    if (lowerQ.includes("coach") || lowerQ.includes("research") || lowerQ.includes("roadmap") || lowerQ.includes("next step")) {
+      const planned = await runPlan(q, role);
+      return {
+        answer: planned.answer || coachBrief(),
+        truthState: "OBSERVED",
+        evidenceLevel: "LEVEL 2",
+        evidenceDetails: `Sentinel-1 gated ${planQuery(q).length} planned step(s). Brief is local repository state, not a model completion.`,
+        governanceStatus: "SENTINEL-1 PLAN_THEN_GATE",
+        relatedProducts: publicProducts(),
+        cognitionCost: cost(startTime, 0)
       };
     }
 

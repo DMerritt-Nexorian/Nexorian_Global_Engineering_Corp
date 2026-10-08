@@ -4,8 +4,8 @@ import "./globals.css";
 import SiteShell from "@/components/SiteShell";
 
 export const metadata = {
-  title: "Nexorian Global Engineering Corp",
-  description: "Operating portal for the Nexorian repository. Not a product catalog for sale."
+  title: "Nexorian",
+  description: "Proof before trust. Rules before reasoning. Determinism before autonomy."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
