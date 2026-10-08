@@ -1,19 +1,18 @@
-import React from 'react';
+
+import React from "react";
+import "./globals.css";
+import SiteShell from "@/components/SiteShell";
 
 export const metadata = {
-  title: 'Nexorian Global Engineering Corp.',
-  description: 'Production Web Portal, 3D WebGL Jarvis Entity, and Air-Gapped VDR',
+  title: "Nexorian Global Engineering Corp",
+  description: "Operating portal for the Nexorian repository. Not a product catalog for sale."
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, padding: 0, backgroundColor: '#090d16', color: '#f8fafc', fontFamily: 'monospace, sans-serif' }}>
-        {children}
+      <body>
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   );
